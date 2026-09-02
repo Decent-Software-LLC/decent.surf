@@ -47,8 +47,9 @@
       }
 
       .wordmark {
+        --logo-height: clamp(5rem, 16vw, 10rem);
         display: flex;
-        align-items: center;
+        align-items: baseline;
         justify-content: center;
         margin: 0;
         line-height: 1;
@@ -57,17 +58,18 @@
       .wordmark__logo {
         display: block;
         width: auto;
-        height: clamp(5rem, 16vw, 10rem);
+        height: var(--logo-height);
       }
 
       .wordmark__extension {
         color: var(--primary-color);
         font-family: "Nunito", "Arial Rounded MT Bold", Arial, sans-serif;
-        font-size: clamp(3rem, 12vw, 7.5rem);
+        font-size: calc(var(--logo-height) * 0.82);
         font-weight: 800;
         letter-spacing: -0.05em;
-        line-height: calc(1em - 5px);
+        line-height: 1;
         margin-left: -0.1em;
+        transform: translateY(calc(var(--logo-height) * -0.204));
       }
 
       .status {
