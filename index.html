@@ -3,9 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="decent.surf is coming soon." />
-    <meta name="theme-color" content="#f4f7fb" />
-    <title>decent.surf — Coming Soon</title>
+    <meta
+      name="description"
+      content="Live wave height, period, direction, and water temperature for iconic U.S. surf spots."
+    />
+    <meta name="theme-color" content="#eef7fa" />
+    <title>decent.surf — Current Surf Conditions</title>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JQVVRLSHDL"></script>
     <script>
@@ -14,214 +17,376 @@
         dataLayer.push(arguments);
       }
       gtag("js", new Date());
-
       gtag("config", "G-JQVVRLSHDL");
     </script>
     <style>
       :root {
         color-scheme: light;
-        --primary-color: #3b86f6;
-        --text-color: #231f20;
-        --background-color: #f4f7fb;
+        --ink: #173047;
+        --muted: #65798a;
+        --ocean: #147da1;
+        --ocean-dark: #07536f;
+        --foam: #eef7fa;
+        --card: #ffffff;
+        --line: #d9e8ee;
+        --good: #13866f;
+        --fair: #d78322;
+        --small: #718492;
+        --shadow: 0 18px 48px rgb(21 74 96 / 0.1);
       }
 
-      * {
-        box-sizing: border-box;
-      }
-
-      html,
+      * { box-sizing: border-box; }
+      html { min-height: 100%; background: var(--foam); }
       body {
-        min-height: 100%;
+        min-height: 100vh;
         margin: 0;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 92% 4%, rgb(71 187 209 / 0.18), transparent 28rem),
+          linear-gradient(180deg, #f8fcfd 0, var(--foam) 38rem);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       }
 
-      body {
-        display: flex;
-        flex-direction: column;
-        min-height: 100svh;
-        background: var(--background-color);
-        color: var(--text-color);
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          "Helvetica Neue", Arial, sans-serif;
-      }
+      button, input { font: inherit; }
+      .container { width: min(1180px, calc(100% - 40px)); margin-inline: auto; }
 
-      main {
-        display: grid;
-        flex: 1;
-        place-items: center;
-        padding: 2rem;
-        text-align: center;
-      }
-
-      .coming-soon {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: clamp(1.25rem, 3vw, 2rem);
-      }
-
-      .wordmark {
-        --logo-height: clamp(5rem, 16vw, 10rem);
-        display: flex;
-        align-items: baseline;
-        justify-content: center;
-        margin: 0;
-        line-height: 1;
-      }
-
-      .wordmark__logo {
-        display: block;
-        width: auto;
-        height: var(--logo-height);
-      }
-
+      .site-header { padding: 28px 0 18px; }
+      .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+      .wordmark { display: inline-flex; align-items: center; margin: 0; line-height: 1; }
+      .wordmark__logo { display: block; width: 136px; height: auto; object-fit: contain; }
       .wordmark__extension {
-        color: var(--primary-color);
-        font-family: "Nunito", "Arial Rounded MT Bold", Arial, sans-serif;
-        font-size: calc(var(--logo-height) * 0.785);
+        margin-left: -0.08em;
+        color: var(--ocean);
+        font-family: "Arial Rounded MT Bold", Arial, sans-serif;
+        font-size: 42px;
         font-weight: 800;
-        letter-spacing: -0.05em;
-        line-height: 1;
-        margin-left: -0.1em;
-        transform: translateY(calc(var(--logo-height) * -0.204));
+        letter-spacing: -0.06em;
+        transform: translateY(-1px);
       }
+      .live-mark { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; font-weight: 700; }
+      .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #24af79; box-shadow: 0 0 0 5px rgb(36 175 121 / 0.12); }
 
-      .status {
-        margin: 0;
-        font-size: clamp(0.75rem, 1.4vw, 0.95rem);
-        font-weight: 600;
-        letter-spacing: 0.24em;
-        text-transform: uppercase;
-      }
+      main { padding: 34px 0 80px; }
+      .hero { display: grid; grid-template-columns: clamp(130px, 17vw, 210px) 1fr; align-items: center; gap: 22px 28px; margin-bottom: 30px; }
+      .hero-art { align-self: center; margin: 0; }
+      .hero-art img { display: block; width: 100%; height: auto; filter: drop-shadow(0 14px 18px rgb(14 82 107 / 0.16)); }
+      .hero-lower { display: flex; grid-column: 1 / -1; align-items: end; justify-content: space-between; gap: 28px; }
+      .eyebrow { margin: 0 0 8px; color: var(--ocean); font-size: 12px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; }
+      h2 { max-width: 720px; margin: 0; color: var(--ocean-dark); font-size: clamp(34px, 6vw, 64px); letter-spacing: -0.055em; line-height: 0.98; }
+      .hero-copy { max-width: 650px; margin: 18px 0 0; color: var(--muted); font-size: 17px; line-height: 1.55; }
+      .summary { display: grid; grid-template-columns: repeat(2, 110px); gap: 10px; }
+      .summary-card { padding: 17px; border: 1px solid var(--line); border-radius: 16px; background: rgb(255 255 255 / 0.72); }
+      .summary-value { display: block; color: var(--ocean-dark); font-size: 24px; font-weight: 800; }
+      .summary-label { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 
-      .container {
-        width: 100%;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
-      }
+      .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 14px; }
+      .tabs { display: flex; gap: 5px; padding: 5px; border: 1px solid var(--line); border-radius: 999px; background: rgb(255 255 255 / 0.7); }
+      .tab { padding: 9px 16px; border: 0; border-radius: 999px; color: var(--muted); background: transparent; cursor: pointer; font-size: 13px; font-weight: 750; }
+      .tab[aria-selected="true"] { color: white; background: var(--ocean-dark); }
+      .search { width: min(280px, 100%); padding: 12px 16px; border: 1px solid var(--line); border-radius: 12px; outline: none; color: var(--ink); background: white; }
+      .search:focus { border-color: var(--ocean); box-shadow: 0 0 0 3px rgb(20 125 161 / 0.12); }
 
-      .site-footer {
-        margin-top: auto;
-        padding: 2rem 0;
-        background: var(--text-color);
-        color: #ffffff;
-      }
-
-      .footer-content {
-        text-align: center;
-      }
-
-      .footer-text {
-        margin: 0 0 1.25rem;
-      }
-
-      .footer-decent {
-        display: flex;
-        flex-direction: column;
+      .table-shell { overflow: hidden; border: 1px solid var(--line); border-radius: 22px; background: var(--card); box-shadow: var(--shadow); }
+      table { width: 100%; border-collapse: collapse; }
+      th { padding: 16px 18px; color: var(--muted); background: #f7fbfc; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-align: right; text-transform: uppercase; }
+      th:first-child { text-align: left; }
+      td { padding: 18px; border-top: 1px solid #e8f0f3; text-align: right; vertical-align: middle; }
+      tr { transition: background 160ms ease; }
+      tbody tr:hover { background: #f8fcfd; }
+      .spot-cell { display: flex; align-items: center; gap: 13px; text-align: left; }
+      .rank { display: grid; flex: 0 0 34px; height: 34px; place-items: center; border-radius: 10px; color: var(--ocean); background: #e8f5f8; font-size: 12px; font-weight: 800; }
+      .spot-name { display: block; font-weight: 800; letter-spacing: -0.01em; }
+      .spot-place { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; }
+      .metric { font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+      .metric small { margin-left: 2px; color: var(--muted); font-size: 10px; font-weight: 700; text-transform: uppercase; }
+      .direction { display: inline-flex; align-items: center; justify-content: flex-end; gap: 7px; min-width: 78px; }
+      .direction-arrow { display: inline-grid; width: 27px; height: 27px; place-items: center; border-radius: 50%; color: var(--ocean); background: #e8f5f8; font-size: 15px; }
+      .rating { display: inline-flex; align-items: center; gap: 7px; padding: 6px 10px; border-radius: 999px; background: #eef3f5; color: var(--small); font-size: 11px; font-weight: 800; text-transform: uppercase; }
+      .rating::before { width: 7px; height: 7px; border-radius: 50%; background: currentColor; content: ""; }
+      .rating.good { color: var(--good); background: #e7f6f1; }
+      .rating.fair { color: var(--fair); background: #fff2df; }
+      .loading-row td { padding: 64px 20px; color: var(--muted); text-align: center; }
+      .empty { padding: 60px 20px; color: var(--muted); text-align: center; }
+      .meta { display: flex; justify-content: space-between; gap: 20px; margin: 14px 4px 0; color: var(--muted); font-size: 12px; }
+      .meta a { color: var(--ocean); }
+      .wax-callout {
+        display: grid;
+        grid-template-columns: minmax(190px, 280px) 1fr;
         align-items: center;
-        gap: 0.85rem;
-        margin-bottom: 1.25rem;
+        gap: clamp(28px, 6vw, 72px);
+        margin-top: 44px;
+        padding: clamp(24px, 5vw, 54px);
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        background: linear-gradient(125deg, #fff 0%, #e6f6f9 100%);
+        box-shadow: var(--shadow);
       }
-
-      .footer-brand {
+      .wax-callout__surfer { display: block; width: 100%; height: auto; border-radius: 18px; }
+      .wax-callout__content { max-width: 520px; }
+      .wax-callout__content h3 { margin: 0; color: var(--ocean-dark); font-size: clamp(30px, 5vw, 52px); letter-spacing: -0.045em; line-height: 1; }
+      .wax-callout__content p { margin: 14px 0 24px; color: var(--muted); font-size: 16px; line-height: 1.55; }
+      .prep-buttons { display: flex; flex-wrap: wrap; gap: 12px; }
+      .wax-button {
         display: inline-flex;
         align-items: center;
-        justify-content: center;
+        gap: 13px;
+        padding: 8px 20px 8px 8px;
+        border-radius: 999px;
+        color: white;
+        background: var(--ocean-dark);
+        box-shadow: 0 8px 20px rgb(7 83 111 / 0.22);
+        font-weight: 800;
+        text-decoration: none;
+        transition: transform 160ms ease, background 160ms ease;
       }
+      .wax-button:hover, .wax-button:focus-visible { background: var(--ocean); transform: translateY(-2px); }
+      .wax-button img { display: block; width: 54px; height: 54px; object-fit: contain; }
 
+      .site-footer { padding: 32px 0; background: #172c3e; color: white; }
+      .footer-content { text-align: center; }
+      .footer-text { margin: 0 0 18px; color: #d9e4e9; }
+      .footer-decent { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-bottom: 18px; }
+      .footer-decent > a { display: inline-flex; padding: 0; border: 0; background: transparent; }
       .footer-logo-image {
         display: block;
-        width: auto;
-        height: 44px;
+        width: 106px;
+        height: auto;
+        object-fit: contain;
+        filter:
+          drop-shadow(1px 0 0 #81d0e7)
+          drop-shadow(-1px 0 0 #81d0e7)
+          drop-shadow(0 1px 0 #81d0e7)
+          drop-shadow(0 -1px 0 #81d0e7);
+      }
+      .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+      .footer-links a { padding: 8px 13px; border: 1px solid rgb(255 255 255 / 0.12); border-radius: 999px; color: #81d0e7; font-size: 13px; font-weight: 700; text-decoration: none; }
+      .footer-copyright { margin: 0; color: #a8bac4; font-size: 12px; }
+
+      @media (max-width: 800px) {
+        .hero { grid-template-columns: 120px 1fr; align-items: center; }
+        .hero-lower { align-items: stretch; flex-direction: column; }
+        .summary { grid-template-columns: repeat(2, 1fr); }
+        .toolbar { align-items: stretch; flex-direction: column; }
+        .tabs { overflow-x: auto; }
+        .tab { flex: 1 0 auto; }
+        .search { width: 100%; max-width: none; }
+        thead { display: none; }
+        tbody, tr, td { display: block; }
+        tbody { padding: 5px 16px; }
+        tbody tr { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 19px 0; border-bottom: 1px solid var(--line); }
+        tbody tr:last-child { border-bottom: 0; }
+        td { padding: 0; border: 0; text-align: left; }
+        td:first-child { grid-column: 1 / -1; }
+        td::before { display: block; margin-bottom: 5px; color: var(--muted); content: attr(data-label); font-size: 9px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+        td:first-child::before { display: none; }
+        .direction { justify-content: flex-start; }
+        .loading-row { display: block; }
+        .loading-row td { padding: 50px 0; }
       }
 
-      .footer-links {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 1rem;
-      }
-
-      .footer-links a {
-        padding: 0.55rem 1rem;
-        border: 1px solid rgb(174 177 183 / 0.1);
-        border-radius: 999px;
-        background: transparent;
-        box-shadow: 2px 2px 0 rgb(174 177 183 / 0.35);
-        color: var(--primary-color);
-        font-family: "Nunito", "Arial Rounded MT Bold", Arial, sans-serif;
-        font-weight: 600;
-        text-decoration: none;
-        transition: border-color 0.3s, color 0.3s;
-      }
-
-      .footer-links a:hover,
-      .footer-links a:focus-visible {
-        color: #c9ddff;
-        border-color: #c9ddff;
-      }
-
-      .footer-copyright {
-        margin: 0;
-        opacity: 0.82;
-      }
-
-      @media (max-width: 600px) {
-        .footer-links {
-          flex-direction: column;
-          align-items: center;
-          width: 100%;
-          gap: 0;
-        }
-
-        .footer-links a {
-          width: 90%;
-          margin: 2px;
-        }
+      @media (max-width: 520px) {
+        .container { width: min(100% - 28px, 1180px); }
+        .site-header { padding-top: 20px; }
+        .wordmark__logo { width: 101px; }
+        .wordmark__extension { font-size: 31px; transform: none; }
+        .live-mark span:last-child { display: none; }
+        main { padding-top: 18px; }
+        .hero { grid-template-columns: 92px 1fr; gap: 16px; }
+        h2 { font-size: 40px; }
+        .hero-copy { font-size: 15px; }
+        .meta { flex-direction: column; gap: 6px; }
+        .wax-callout { grid-template-columns: 1fr; padding: 20px; text-align: center; }
+        .wax-callout__surfer { width: min(100%, 260px); margin-inline: auto; }
+        .wax-button { justify-content: center; }
       }
     </style>
   </head>
   <body>
-    <main>
-      <section class="coming-soon" aria-labelledby="site-title">
-        <h1 class="wordmark" id="site-title">
-          <img
-            class="wordmark__logo"
-            src="assets/images/decent.png"
-            alt="decent"
-            width="4836"
-            height="1926"
-          /><span class="wordmark__extension">.surf</span>
+    <header class="site-header">
+      <div class="container header-inner">
+        <h1 class="wordmark">
+          <img class="wordmark__logo" src="assets/images/decent.png" alt="decent" width="1200" height="478" />
+          <span class="wordmark__extension">.surf</span>
         </h1>
-        <p class="status">Coming Soon</p>
-      </section>
-    </main>
-    <footer class="site-footer">
+        <div class="live-mark"><span class="live-dot"></span><span>Live marine data</span></div>
+      </div>
+    </header>
+
+    <main>
       <div class="container">
-        <div class="footer-content">
-          <p class="footer-text">Building a more decent web, one project at a time.</p>
-          <div class="footer-decent">
-            <a
-              class="footer-brand"
-              href="https://decentsoftware.llc/"
-              target="_blank"
-              rel="noopener"
-              aria-label="Decent Software LLC"
-            >
-              <img src="assets/images/decent.png" alt="decent" class="footer-logo-image" />
-            </a>
-            <nav class="footer-links" aria-label="Other Decent sites">
-              <a href="https://decent.apartments/" target="_blank" rel="noopener">Apartments</a>
-              <a href="https://decent.charity/" target="_blank" rel="noopener">Charity</a>
-              <a href="https://decent.church/" target="_blank" rel="noopener">Church</a>
-              <a href="https://decent.clothing/" target="_blank" rel="noopener">Clothing</a>
-              <a href="https://decent.food/" target="_blank" rel="noopener">Food</a>
-            </nav>
+        <section class="hero" aria-labelledby="conditions-heading">
+          <figure class="hero-art">
+            <img src="assets/images/clay-surfer.png" alt="Claymation surfer with a ponytail riding a curling wave" width="600" height="600" />
+          </figure>
+          <div>
+            <p class="eyebrow">Current conditions</p>
+            <h2 id="conditions-heading">Know before you paddle out.</h2>
           </div>
-          <p class="footer-copyright">© 2026 Decent Software LLC. All rights reserved.</p>
+          <div class="hero-lower">
+            <p class="hero-copy">A clean read on waves at 25 iconic U.S. breaks. Conditions are modeled at each location and updated hourly.</p>
+            <div class="summary" aria-label="Conditions summary">
+              <div class="summary-card"><strong class="summary-value" id="spot-count">25</strong><span class="summary-label">Surf spots</span></div>
+              <div class="summary-card"><strong class="summary-value" id="best-height">—</strong><span class="summary-label">Largest now</span></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="toolbar">
+          <div class="tabs" role="tablist" aria-label="Filter by coast">
+            <button class="tab" type="button" role="tab" aria-selected="true" data-region="all">All spots</button>
+            <button class="tab" type="button" role="tab" aria-selected="false" data-region="east">East Coast</button>
+            <button class="tab" type="button" role="tab" aria-selected="false" data-region="west">West Coast</button>
+            <button class="tab" type="button" role="tab" aria-selected="false" data-region="hawaii">Hawaiʻi</button>
+          </div>
+          <label><span class="sr-only"></span><input class="search" id="spot-search" type="search" placeholder="Search a spot or state…" aria-label="Search surf spots" /></label>
         </div>
+
+        <div class="table-shell">
+          <table>
+            <thead><tr><th>Surf spot</th><th>Wave height</th><th>Period</th><th>Direction</th><th>Water</th><th>Conditions</th></tr></thead>
+            <tbody id="conditions-body"><tr class="loading-row"><td colspan="6">Loading the latest marine conditions…</td></tr></tbody>
+          </table>
+          <div class="empty" id="empty-state" hidden>No surf spots match that search.</div>
+        </div>
+        <div class="meta">
+          <span id="updated-at">Fetching the latest update…</span>
+          <span>Marine model data by <a href="https://open-meteo.com/en/docs/marine-weather-api" target="_blank" rel="noopener">Open-Meteo</a> · Verify local conditions before entering the water.</span>
+        </div>
+        <aside class="wax-callout" aria-labelledby="wax-heading">
+          <img class="wax-callout__surfer" src="assets/images/clay-beach-surfer.png" alt="Blond claymation surfer in red board shorts giving a shaka on a small sand base" width="532" height="800" loading="lazy" />
+          <div class="wax-callout__content">
+            <p class="eyebrow">Dawn Patrol Prep</p>
+            <h3 id="wax-heading">Ready waters, fresh wax.</h3>
+            <p>Stock up before the next swell rolls through.</p>
+            <div class="prep-buttons">
+              <a class="wax-button" href="https://www.amazon.com/s?k=Surf+wax&amp;tag=decent-surf-20" target="_blank" rel="sponsored noopener">
+                <img src="assets/images/clay-surf-wax.png" alt="" width="300" height="300" loading="lazy" />
+                <span>Get more wax</span>
+              </a>
+              <a class="wax-button" href="https://www.amazon.com/s?k=rashguard&amp;tag=decent-surf-20" target="_blank" rel="sponsored noopener">
+                <img src="assets/images/clay-rashguard-surfer.png" alt="" width="300" height="300" loading="lazy" />
+                <span>Got a Rashie?</span>
+              </a>
+              <a class="wax-button" href="https://www.amazon.com/s?k=wetsuit&amp;tag=decent-surf-20" target="_blank" rel="sponsored noopener">
+                <img src="assets/images/clay-cold-surfer.png" alt="" width="300" height="300" loading="lazy" />
+                <span>Colder Water</span>
+              </a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-content">
+        <p class="footer-text">Finding decent waves, surfs up brah!</p>
+        <div class="footer-decent">
+          <a href="https://decentsoftware.llc/" target="_blank" rel="noopener" aria-label="Decent Software LLC"><img src="assets/images/decent.png" alt="decent" class="footer-logo-image" width="1200" height="478" loading="lazy" /></a>
+          <nav class="footer-links" aria-label="Other Decent sites">
+            <a href="https://decent.apartments/" target="_blank" rel="noopener">Apartments</a><a href="https://decent.charity/" target="_blank" rel="noopener">Charity</a><a href="https://decent.church/" target="_blank" rel="noopener">Church</a><a href="https://decent.clothing/" target="_blank" rel="noopener">Clothing</a><a href="https://decent.food/" target="_blank" rel="noopener">Food</a>
+          </nav>
+        </div>
+        <p class="footer-copyright">© 2026 Decent Software LLC. All rights reserved.</p>
       </div>
     </footer>
+
+    <script>
+      const spots = [
+        ["Cape Hatteras Lighthouse", "Buxton, NC", "east", 35.251, -75.529], ["Sebastian Inlet", "Melbourne Beach, FL", "east", 27.86, -80.447],
+        ["New Smyrna Inlet", "New Smyrna Beach, FL", "east", 29.063, -80.914], ["Manasquan Inlet", "Manasquan, NJ", "east", 40.1027, -74.0345],
+        ["Ditch Plains", "Montauk, NY", "east", 41.039, -71.895], ["The Washout", "Folly Beach, SC", "east", 32.66, -79.914],
+        ["First Street Jetty", "Virginia Beach, VA", "east", 36.831, -75.974], ["Rockaway Beach", "Queens, NY", "east", 40.583, -73.817],
+        ["Indian River Inlet", "Delaware Seashore, DE", "east", 38.609, -75.064], ["Casino Pier", "Seaside Heights, NJ", "east", 39.944, -74.069],
+        ["Lower Trestles", "San Clemente, CA", "west", 33.382, -117.588], ["Rincon", "Carpinteria, CA", "west", 34.373, -119.478],
+        ["Malibu Surfrider Beach", "Malibu, CA", "west", 34.036, -118.677], ["Steamer Lane", "Santa Cruz, CA", "west", 36.952, -122.026],
+        ["Huntington Beach Pier", "Huntington Beach, CA", "west", 33.655, -118.003], ["Mavericks", "Half Moon Bay, CA", "west", 37.494, -122.501],
+        ["Ocean Beach", "San Francisco, CA", "west", 37.759, -122.511], ["Windansea Beach", "La Jolla, CA", "west", 32.831, -117.282],
+        ["Short Sands Beach", "Oswald West State Park, OR", "west", 45.759, -123.97], ["Westport Jetty", "Westport, WA", "west", 46.904, -124.124],
+        ["Banzai Pipeline", "Oʻahu, HI", "hawaii", 21.665, -158.053], ["Sunset Beach", "Oʻahu, HI", "hawaii", 21.679, -157.995],
+        ["Waimea Bay", "Oʻahu, HI", "hawaii", 21.641, -158.064], ["Honolua Bay", "Maui, HI", "hawaii", 21.014, -156.639],
+        ["Ala Moana Bowls", "Honolulu, HI", "hawaii", 21.282, -157.848]
+      ].map(([name, place, region, lat, lon], index) => ({
+        name, place, region, lat, lon,
+        rank: index < 10 ? index + 1 : index < 20 ? index - 9 : index - 19
+      }));
+
+      const body = document.querySelector("#conditions-body");
+      const search = document.querySelector("#spot-search");
+      const empty = document.querySelector("#empty-state");
+      let activeRegion = "all";
+      let conditions = [];
+
+      const compass = (degrees) => {
+        if (!Number.isFinite(degrees)) return "—";
+        return ["N", "NE", "E", "SE", "S", "SW", "W", "NW"][Math.round(degrees / 45) % 8];
+      };
+      const rating = (height, period) => {
+        if (!Number.isFinite(height) || !Number.isFinite(period)) return ["Unavailable", ""];
+        const energy = height * period;
+        if (height >= 3 && period >= 10) return ["Good", "good"];
+        if (energy >= 18) return ["Fair", "fair"];
+        return ["Small", ""];
+      };
+      const value = (number, digits = 1) => Number.isFinite(number) ? number.toFixed(digits) : "—";
+
+      function render() {
+        const query = search.value.trim().toLowerCase();
+        const visible = conditions.filter((spot) => (activeRegion === "all" || spot.region === activeRegion) && `${spot.name} ${spot.place}`.toLowerCase().includes(query));
+        empty.hidden = visible.length > 0;
+        body.hidden = visible.length === 0;
+        body.innerHTML = visible.map((spot) => {
+          const [label, className] = rating(spot.waveHeight, spot.wavePeriod);
+          return `<tr>
+            <td data-label="Surf spot"><div class="spot-cell"><span class="rank">${spot.rank}</span><span><strong class="spot-name">${spot.name}</strong><span class="spot-place">${spot.place}</span></span></div></td>
+            <td data-label="Wave height"><span class="metric">${value(spot.waveHeight)}<small>ft</small></span></td>
+            <td data-label="Period"><span class="metric">${value(spot.wavePeriod, 0)}<small>sec</small></span></td>
+            <td data-label="Direction"><span class="direction"><span class="direction-arrow" style="transform:rotate(${value(spot.waveDirection, 0)}deg)">↓</span><span class="metric">${compass(spot.waveDirection)}</span></span></td>
+            <td data-label="Water"><span class="metric">${value(spot.waterTemperature, 0)}<small>°F</small></span></td>
+            <td data-label="Conditions"><span class="rating ${className}">${label}</span></td>
+          </tr>`;
+        }).join("");
+        document.querySelector("#spot-count").textContent = visible.length;
+      }
+
+      async function loadConditions() {
+        const latitude = spots.map((spot) => spot.lat).join(",");
+        const longitude = spots.map((spot) => spot.lon).join(",");
+        const parameters = new URLSearchParams({ latitude, longitude, current: "wave_height,wave_direction,wave_period,sea_surface_temperature", length_unit: "imperial", temperature_unit: "fahrenheit", timezone: "auto" });
+        try {
+          const response = await fetch(`https://marine-api.open-meteo.com/v1/marine?${parameters}`, { cache: "no-store" });
+          if (!response.ok) throw new Error(`Marine service returned ${response.status}`);
+          const payload = await response.json();
+          const results = Array.isArray(payload) ? payload : [payload];
+          conditions = spots.map((spot, index) => ({
+            ...spot,
+            waveHeight: results[index]?.current?.wave_height,
+            wavePeriod: results[index]?.current?.wave_period,
+            waveDirection: results[index]?.current?.wave_direction,
+            waterTemperature: results[index]?.current?.sea_surface_temperature,
+            time: results[index]?.current?.time
+          }));
+          const largest = conditions.reduce((max, spot) => Math.max(max, spot.waveHeight || 0), 0);
+          document.querySelector("#best-height").textContent = largest ? `${largest.toFixed(1)} ft` : "—";
+          const latest = conditions.find((spot) => spot.time)?.time;
+          document.querySelector("#updated-at").textContent = latest ? `Conditions updated ${new Date(latest).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}` : "Latest available conditions";
+        } catch (error) {
+          conditions = spots.map((spot) => ({ ...spot }));
+          document.querySelector("#updated-at").textContent = "Live conditions are temporarily unavailable.";
+          console.error(error);
+        }
+        render();
+      }
+
+      document.querySelectorAll(".tab").forEach((tab) => tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach((item) => item.setAttribute("aria-selected", "false"));
+        tab.setAttribute("aria-selected", "true");
+        activeRegion = tab.dataset.region;
+        render();
+      }));
+      search.addEventListener("input", render);
+      loadConditions();
+      window.setInterval(loadConditions, 60 * 60 * 1000);
+    </script>
   </body>
 </html>
