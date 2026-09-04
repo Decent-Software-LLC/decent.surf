@@ -36,7 +36,7 @@
       }
 
       * { box-sizing: border-box; }
-      html { min-height: 100%; background: var(--foam); }
+      html { min-height: 100%; scroll-behavior: smooth; background: var(--foam); }
       body {
         min-height: 100vh;
         margin: 0;
@@ -63,8 +63,19 @@
         letter-spacing: -0.06em;
         transform: translateY(-1px);
       }
-      .live-mark { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; font-weight: 700; }
-      .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #24af79; box-shadow: 0 0 0 5px rgb(36 175 121 / 0.12); }
+      .gear-link {
+        padding: 9px 14px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--ocean-dark);
+        background: rgb(255 255 255 / 0.55);
+        font-size: 12px;
+        font-weight: 750;
+        letter-spacing: 0.04em;
+        text-decoration: none;
+        transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+      }
+      .gear-link:hover, .gear-link:focus-visible { border-color: #a9cedb; color: var(--ocean); background: white; }
 
       main { padding: 34px 0 80px; }
       .hero { display: grid; grid-template-columns: clamp(130px, 17vw, 210px) 1fr; align-items: center; gap: 22px 28px; margin-bottom: 30px; }
@@ -190,7 +201,6 @@
         .site-header { padding-top: 20px; }
         .wordmark__logo { width: 101px; }
         .wordmark__extension { font-size: 31px; transform: none; }
-        .live-mark span:last-child { display: none; }
         main { padding-top: 18px; }
         .hero { grid-template-columns: 92px 1fr; gap: 16px; }
         h2 { font-size: 40px; }
@@ -217,7 +227,7 @@
           <img class="wordmark__logo" src="assets/images/decent.png" alt="decent" width="1200" height="478" />
           <span class="wordmark__extension">.surf</span>
         </h1>
-        <div class="live-mark"><span class="live-dot"></span><span>Live marine data</span></div>
+        <a class="gear-link" href="#dawn-patrol">gear up</a>
       </div>
     </header>
 
@@ -261,7 +271,7 @@
           <span id="updated-at">Fetching the latest update…</span>
           <span>Marine model data by <a href="https://open-meteo.com/en/docs/marine-weather-api" target="_blank" rel="noopener">Open-Meteo</a> · Verify local conditions before entering the water.</span>
         </div>
-        <aside class="wax-callout" aria-labelledby="wax-heading">
+        <aside class="wax-callout" id="dawn-patrol" aria-labelledby="wax-heading">
           <img class="wax-callout__surfer" src="assets/images/clay-beach-surfer.png" alt="Blond claymation surfer in red board shorts giving a shaka on a small sand base" width="532" height="800" loading="lazy" />
           <div class="wax-callout__content">
             <p class="eyebrow">Dawn Patrol Prep</p>
@@ -279,6 +289,10 @@
               <a class="wax-button" href="https://www.amazon.com/s?k=wetsuit&amp;tag=decent-surf-20" target="_blank" rel="sponsored noopener">
                 <img src="assets/images/clay-cold-surfer.png" alt="" width="300" height="300" loading="lazy" />
                 <span>Colder Water</span>
+              </a>
+              <a class="wax-button" href="https://www.amazon.com/s?k=board+shorts&amp;tag=decent-surf-20" target="_blank" rel="sponsored noopener">
+                <img src="assets/images/clay-board-shorts.png" alt="" width="300" height="300" loading="lazy" />
+                <span>Board Shorts</span>
               </a>
             </div>
           </div>
