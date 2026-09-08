@@ -104,6 +104,10 @@
       td { padding: 18px; border-top: 1px solid #e8f0f3; text-align: right; vertical-align: middle; }
       tr { transition: background 160ms ease; }
       tbody tr:hover { background: #f8fcfd; }
+      .region-divider-row:hover { background: transparent; }
+      .region-divider-row td { padding: 24px 18px 9px; border-top: 0; text-align: left; }
+      .region-divider-row:first-child td { padding-top: 18px; }
+      .region-divider { display: inline-flex; padding: 7px 11px; border-radius: 8px; color: white; background: var(--ocean-dark); font-size: 11px; font-weight: 850; letter-spacing: 0.12em; text-transform: uppercase; }
       .spot-cell { display: flex; align-items: center; gap: 13px; text-align: left; }
       .rank { display: grid; flex: 0 0 34px; height: 34px; place-items: center; border-radius: 10px; color: var(--ocean); background: #e8f5f8; font-size: 12px; font-weight: 800; }
       .spot-name { display: block; color: var(--ink); font-weight: 800; letter-spacing: -0.01em; text-decoration: none; }
@@ -221,6 +225,9 @@
         td:first-child { grid-column: 1 / -1; }
         td::before { display: block; margin-bottom: 5px; color: var(--muted); content: attr(data-label); font-size: 9px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
         td:first-child::before { display: none; }
+        .region-divider-row { display: block; }
+        .region-divider-row td { display: block; padding: 22px 0 8px; }
+        .region-divider-row td::before { display: none; }
         .direction { justify-content: flex-start; }
         .condition-tooltip { right: auto; left: 0; }
         .condition-tooltip::after { right: auto; left: 22px; }
@@ -278,9 +285,9 @@
             <h2 id="conditions-heading">Know before you paddle out.</h2>
           </div>
           <div class="hero-lower">
-            <p class="hero-copy">A clean read on waves at 25 iconic U.S. breaks. Conditions are modeled at each location and updated hourly.</p>
+            <p class="hero-copy">A clean read on waves at 100 iconic U.S. breaks. Conditions are modeled at each location and updated hourly.</p>
             <div class="summary" aria-label="Conditions summary">
-              <div class="summary-card"><strong class="summary-value" id="spot-count">25</strong><span class="summary-label">Surf spots</span></div>
+              <div class="summary-card"><strong class="summary-value" id="spot-count">100</strong><span class="summary-label">Surf spots</span></div>
               <div class="summary-card"><strong class="summary-value" id="best-height">—</strong><span class="summary-label">Largest now</span></div>
             </div>
           </div>
@@ -351,24 +358,63 @@
     </footer>
 
     <script>
+      const regionRanks = {};
       const spots = [
         ["Cape Hatteras Lighthouse", "Buxton, NC", "east", 35.251, -75.529], ["Sebastian Inlet", "Melbourne Beach, FL", "east", 27.86, -80.447],
         ["New Smyrna Inlet", "New Smyrna Beach, FL", "east", 29.063, -80.914], ["Manasquan Inlet", "Manasquan, NJ", "east", 40.1027, -74.0345],
         ["Ditch Plains", "Montauk, NY", "east", 41.039, -71.895], ["The Washout", "Folly Beach, SC", "east", 32.66, -79.914],
         ["First Street Jetty", "Virginia Beach, VA", "east", 36.831, -75.974], ["Rockaway Beach", "Queens, NY", "east", 40.583, -73.817],
         ["Indian River Inlet", "Delaware Seashore, DE", "east", 38.609, -75.064], ["Casino Pier", "Seaside Heights, NJ", "east", 39.944, -74.069],
+        ["Cocoa Beach Pier", "Cocoa Beach, FL", "east", 28.3679, -80.6043], ["Reef Road", "Palm Beach, FL", "east", 26.7509, -80.0337],
+        ["St. Augustine Pier", "St. Augustine Beach, FL", "east", 29.8567, -81.2652], ["Crystal Pier", "Wrightsville Beach, NC", "east", 34.1885, -77.806],
+        ["Carolina Beach Pier", "Carolina Beach, NC", "east", 34.0714, -77.8851], ["Jennette’s Pier", "Nags Head, NC", "east", 35.91, -75.5915],
+        ["Rodanthe Pier", "Rodanthe, NC", "east", 35.5932, -75.4661], ["Sandbridge Beach", "Virginia Beach, VA", "east", 36.7247, -75.928],
+        ["Ocean City Inlet", "Ocean City, MD", "east", 38.3258, -75.0874], ["Bethany Beach", "Bethany Beach, DE", "east", 38.5396, -75.0552],
+        ["Holgate", "Long Beach Island, NJ", "east", 39.5336, -74.2604], ["Asbury Park", "Asbury Park, NJ", "east", 40.2204, -74.0005],
+        ["Lincoln Boulevard", "Long Beach, NY", "east", 40.5832, -73.6603], ["Gilgo Beach", "Babylon, NY", "east", 40.6183, -73.3979],
+        ["Narragansett Town Beach", "Narragansett, RI", "east", 41.4325, -71.456], ["Ruggles", "Newport, RI", "east", 41.4707, -71.3062],
+        ["Matunuck Point", "South Kingstown, RI", "east", 41.3666, -71.5655], ["Nauset Beach", "Orleans, MA", "east", 41.8586, -69.9527],
+        ["Coast Guard Beach", "Eastham, MA", "east", 41.8425, -69.9464], ["Higgins Beach", "Scarborough, ME", "east", 43.5614, -70.2805],
         ["Lower Trestles", "San Clemente, CA", "west", 33.382, -117.588], ["Rincon", "Carpinteria, CA", "west", 34.373, -119.478],
         ["Malibu Surfrider Beach", "Malibu, CA", "west", 34.036, -118.677], ["Steamer Lane", "Santa Cruz, CA", "west", 36.952, -122.026],
         ["Huntington Beach Pier", "Huntington Beach, CA", "west", 33.655, -118.003], ["Mavericks", "Half Moon Bay, CA", "west", 37.494, -122.501],
         ["Ocean Beach", "San Francisco, CA", "west", 37.759, -122.511], ["Windansea Beach", "La Jolla, CA", "west", 32.831, -117.282],
         ["Short Sands Beach", "Oswald West State Park, OR", "west", 45.759, -123.97], ["Westport Jetty", "Westport, WA", "west", 46.904, -124.124],
+        ["First Beach", "La Push, WA", "west", 47.9065, -124.642], ["Rialto Beach", "Olympic Peninsula, WA", "west", 47.9212, -124.638],
+        ["Hobuck Beach", "Neah Bay, WA", "west", 48.3315, -124.669], ["Shi Shi Beach", "Olympic Peninsula, WA", "west", 48.257, -124.683],
+        ["Long Beach", "Long Beach, WA", "west", 46.35, -124.061], ["Seaside Cove", "Seaside, OR", "west", 45.976, -123.94],
+        ["Indian Beach", "Cannon Beach, OR", "west", 45.929, -123.978], ["Cape Kiwanda", "Pacific City, OR", "west", 45.215, -123.972],
+        ["Otter Rock", "Otter Rock, OR", "west", 44.747, -124.064], ["Agate Beach", "Newport, OR", "west", 44.677, -124.067],
+        ["Florence South Jetty", "Florence, OR", "west", 43.995, -124.126], ["Brookings South Jetty", "Brookings, OR", "west", 42.046, -124.277],
+        ["Crescent City South Beach", "Crescent City, CA", "west", 41.741, -124.184], ["Linda Mar", "Pacifica, CA", "west", 37.598, -122.501],
+        ["Pleasure Point", "Santa Cruz, CA", "west", 36.956, -121.973], ["Cowell Beach", "Santa Cruz, CA", "west", 36.961, -122.025],
+        ["Morro Rock", "Morro Bay, CA", "west", 35.371, -120.868], ["Pismo Beach Pier", "Pismo Beach, CA", "west", 35.142, -120.642],
+        ["Jalama Beach", "Santa Barbara County, CA", "west", 34.509, -120.5], ["County Line", "Ventura County, CA", "west", 34.052, -118.963],
+        ["Zuma Beach", "Malibu, CA", "west", 34.019, -118.831], ["Topanga Beach", "Los Angeles, CA", "west", 34.039, -118.578],
+        ["Venice Breakwater", "Venice, CA", "west", 33.985, -118.474], ["El Porto", "Manhattan Beach, CA", "west", 33.9, -118.423],
+        ["The Wedge", "Newport Beach, CA", "west", 33.593, -117.881], ["Salt Creek Beach", "Dana Point, CA", "west", 33.476, -117.721],
+        ["Doheny State Beach", "Dana Point, CA", "west", 33.462, -117.685], ["Oceanside Pier", "Oceanside, CA", "west", 33.193, -117.384],
+        ["Swami’s", "Encinitas, CA", "west", 33.035, -117.292], ["Black’s Beach", "La Jolla, CA", "west", 32.889, -117.253],
         ["Banzai Pipeline", "Oʻahu, HI", "hawaii", 21.665, -158.053], ["Sunset Beach", "Oʻahu, HI", "hawaii", 21.679, -157.995],
         ["Waimea Bay", "Oʻahu, HI", "hawaii", 21.641, -158.064], ["Honolua Bay", "Maui, HI", "hawaii", 21.014, -156.639],
-        ["Ala Moana Bowls", "Honolulu, HI", "hawaii", 21.282, -157.848]
+        ["Ala Moana Bowls", "Honolulu, HI", "hawaii", 21.282, -157.848],
+        ["Haleʻiwa Aliʻi Beach", "Oʻahu, HI", "hawaii", 21.594, -158.106], ["Chun’s Reef", "Oʻahu, HI", "hawaii", 21.6186, -158.0872],
+        ["Laniakea", "Oʻahu, HI", "hawaii", 21.62, -158.086], ["Rocky Point", "Oʻahu, HI", "hawaii", 21.6695, -158.0504],
+        ["Velzyland", "Oʻahu, HI", "hawaii", 21.6848, -157.9855], ["Mākaha", "Oʻahu, HI", "hawaii", 21.4754, -158.2201],
+        ["Yokohama Bay", "Oʻahu, HI", "hawaii", 21.5499, -158.2437], ["Sandy Beach", "Oʻahu, HI", "hawaii", 21.285, -157.672],
+        ["Makapuʻu Beach", "Oʻahu, HI", "hawaii", 21.3108, -157.6596], ["Waikīkī Canoes", "Oʻahu, HI", "hawaii", 21.2766, -157.827],
+        ["Diamond Head Cliffs", "Oʻahu, HI", "hawaii", 21.256, -157.802], ["Hoʻokipa Beach", "Maui, HI", "hawaii", 20.934, -156.357],
+        ["Peʻahi", "Maui, HI", "hawaii", 20.944, -156.301], ["Kanahā Beach", "Maui, HI", "hawaii", 20.896, -156.441],
+        ["Lahaina Breakwall", "Maui, HI", "hawaii", 20.872, -156.678], ["Olowalu", "Maui, HI", "hawaii", 20.809, -156.617],
+        ["Māʻalaea Freight Trains", "Maui, HI", "hawaii", 20.79, -156.508], ["Hanalei Bay", "Kauaʻi, HI", "hawaii", 22.209, -159.499],
+        ["Tunnels", "Kauaʻi, HI", "hawaii", 22.224, -159.56], ["Anahola Bay", "Kauaʻi, HI", "hawaii", 22.144, -159.302],
+        ["Keālia Beach", "Kauaʻi, HI", "hawaii", 22.099, -159.305], ["Pakalā", "Kauaʻi, HI", "hawaii", 21.956, -159.664],
+        ["Banyans", "Hawaiʻi Island, HI", "hawaii", 19.606, -155.976], ["Honoliʻi", "Hawaiʻi Island, HI", "hawaii", 19.755, -155.09],
+        ["Pine Trees", "Hawaiʻi Island, HI", "hawaii", 19.697, -156.045]
       ].map(([name, place, region, lat, lon], index) => ({
         name, place, region, lat, lon,
-        slug: name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
-        rank: index < 10 ? index + 1 : index < 20 ? index - 9 : index - 19
+        slug: name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[’'ʻ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
+        rank: regionRanks[region] = (regionRanks[region] || 0) + 1
       }));
 
       const body = document.querySelector("#conditions-body");
@@ -398,11 +444,16 @@
       function render() {
         const query = search.value.trim().toLowerCase();
         const visible = conditions.filter((spot) => (activeRegion === "all" || spot.region === activeRegion) && `${spot.name} ${spot.place}`.toLowerCase().includes(query));
+        const regionLabels = { east: "East Coast", west: "West Coast", hawaii: "Hawaii" };
+        let previousRegion = "";
+        const largest = visible.reduce((max, spot) => Math.max(max, spot.waveHeight || 0), 0);
         empty.hidden = visible.length > 0;
         body.hidden = visible.length === 0;
         body.innerHTML = visible.map((spot) => {
           const [label, className] = rating(spot.waveHeight, spot.wavePeriod);
-          return `<tr>
+          const divider = activeRegion === "all" && spot.region !== previousRegion ? `<tr class="region-divider-row"><td colspan="6"><span class="region-divider">${regionLabels[spot.region]}</span></td></tr>` : "";
+          previousRegion = spot.region;
+          return `${divider}<tr>
             <td data-label="Surf spot"><div class="spot-cell"><span class="rank">${spot.rank}</span><span><a class="spot-name" href="/spots/${spot.slug}/">${spot.name}</a><span class="spot-place">${spot.place}</span></span></div></td>
             <td data-label="Wave height"><span class="metric">${value(spot.waveHeight)}<small>ft</small></span></td>
             <td data-label="Period"><span class="metric">${value(spot.wavePeriod, 0)}<small>sec</small></span></td>
@@ -412,6 +463,7 @@
           </tr>`;
         }).join("");
         document.querySelector("#spot-count").textContent = visible.length;
+        document.querySelector("#best-height").textContent = largest ? `${largest.toFixed(1)} ft` : "—";
       }
 
       async function loadConditions() {
@@ -431,8 +483,6 @@
             waterTemperature: results[index]?.current?.sea_surface_temperature,
             time: results[index]?.current?.time
           }));
-          const largest = conditions.reduce((max, spot) => Math.max(max, spot.waveHeight || 0), 0);
-          document.querySelector("#best-height").textContent = largest ? `${largest.toFixed(1)} ft` : "—";
           const latest = conditions.find((spot) => spot.time)?.time;
           document.querySelector("#updated-at").textContent = latest ? `Conditions updated ${new Date(latest).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}` : "Latest available conditions";
         } catch (error) {

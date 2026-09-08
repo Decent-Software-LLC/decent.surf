@@ -14,6 +14,7 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JQVVRLSHDL"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-JQVVRLSHDL");</script>
     <script type="module" src="/components/surf-conditions.js"></script>
+    <script type="module" src="/components/dawn-patrol.js"></script>
     <style>
       :root { color-scheme: light; --ink:#173047; --muted:#65798a; --ocean:#147da1; --dark:#07536f; --foam:#eef7fa; --card:#fff; --line:#d9e8ee; --good:#13866f; --shadow:0 18px 48px rgb(21 74 96 / .1); }
       * { box-sizing:border-box; }
@@ -118,6 +119,7 @@
         <div class="history-card" id="history"><div class="loading">Loading history…</div></div>
       </section>
       <div class="data-meta"><span id="data-updated">Fetching marine data…</span><span>Modeled marine data by <a href="https://open-meteo.com/en/docs/marine-weather-api" target="_blank" rel="noopener">Open-Meteo</a> · Not for navigation.</span></div>
+      <dawn-patrol></dawn-patrol>
     </main>
     <footer class="site-footer">
       <div class="container footer-content">
