@@ -13,7 +13,8 @@
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JQVVRLSHDL"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-JQVVRLSHDL");</script>
-    <script type="module" src="/components/surf-conditions.js"></script>
+    <script type="module" src="/components/surf-conditions.js?v=4"></script>
+    <script type="module" src="/components/live-camera.js"></script>
     <script type="module" src="/components/dawn-patrol.js"></script>
     <style>
       :root { color-scheme: light; --ink:#173047; --muted:#65798a; --ocean:#147da1; --dark:#07536f; --foam:#eef7fa; --card:#fff; --line:#d9e8ee; --good:#13866f; --shadow:0 18px 48px rgb(21 74 96 / .1); }
@@ -39,10 +40,11 @@
       .surf-widget-art { position:absolute; z-index:0; top:50%; right:6px; width:clamp(150px,21vw,225px); height:auto; opacity:1; filter:drop-shadow(0 10px 14px rgb(2 45 64/.2)); transform:translateY(-50%); pointer-events:none; }
       .surf-widget-heading { position:relative; z-index:1; display:flex; align-items:start; justify-content:space-between; gap:20px; }
       .surf-widget-kicker { color:#bdeafa; font-size:11px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; }
-      .surf-widget-heading h2 { margin:5px 0 0; font-size:clamp(22px,4vw,34px); }
+      .surf-widget-heading h2 { margin:5px 0 0; color:#bdeafa; font-size:11px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; }
       .surf-widget-rating { position:relative; z-index:2; display:inline-flex; align-items:center; gap:7px; padding:7px 11px; border-radius:999px; color:#fff; background:rgb(3 48 68/.94); box-shadow:0 3px 10px rgb(2 45 64/.22); font-size:11px; font-weight:800; text-transform:uppercase; }
       .surf-widget-primary { position:relative; z-index:1; display:flex; align-items:baseline; gap:8px; margin:30px 0 22px; }
       .surf-widget-primary strong { font-size:clamp(72px,15vw,130px); letter-spacing:-.08em; line-height:.7; }
+      .surf-widget-primary .surf-widget-decimal { display:inline-block; margin-inline:.09em; font-size:1em; font-weight:inherit; line-height:inherit; vertical-align:baseline; }
       .surf-widget-primary span { color:#bdeafa; font-size:18px; font-weight:700; }
       .surf-widget-grid { position:relative; z-index:1; display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
       .surf-widget-grid div { padding:14px 16px; border-radius:15px; background:rgb(255 255 255/.1); }
@@ -108,6 +110,7 @@
       </section>
 
       <surf-conditions spot="Casino Pier" latitude="39.944" longitude="-74.069"></surf-conditions>
+      <live-camera></live-camera>
 
       <section class="section" aria-labelledby="forecast-heading">
         <div class="section-heading"><div><p class="eyebrow">Looking ahead</p><h2 id="forecast-heading">Seven-day forecast</h2></div><span class="section-note">Daily range · dominant period and direction</span></div>

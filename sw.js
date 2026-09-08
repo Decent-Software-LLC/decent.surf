@@ -1,7 +1,8 @@
-const CACHE_NAME = "decent-surf-v2";
+const CACHE_NAME = "decent-surf-v4";
 const APP_SHELL = [
   "/",
-  "/components/surf-conditions.js",
+  "/components/surf-conditions.js?v=4",
+  "/components/live-camera.js",
   "/components/dawn-patrol.js",
   "/manifest.webmanifest",
   "/assets/images/decent.png",

@@ -55,15 +55,16 @@ class SurfConditions extends HTMLElement {
     const direction = Number(current.wave_direction);
     const temperature = Number(current.sea_surface_temperature);
     const condition = height >= 3 && period >= 10 ? "Good" : height >= 2 && period >= 8 ? "Fair" : "Small";
+    const heightDisplay = height.toFixed(1).replace(".", '<span class="surf-widget-decimal">.</span>');
 
     this.innerHTML = `
       <article class="surf-widget-card">
         <img class="surf-widget-art" src="/assets/images/decent-wave-icon.png" alt="" width="400" height="400" />
         <div class="surf-widget-heading">
-          <div><span class="surf-widget-kicker">Right now</span><h2>${spot}</h2></div>
+          <div><span class="surf-widget-kicker">Right now</span><h2>Wave height</h2></div>
           <span class="surf-widget-rating surf-widget-rating--${condition.toLowerCase()}">${condition}</span>
         </div>
-        <div class="surf-widget-primary"><strong>${height.toFixed(1)}</strong><span>feet</span></div>
+        <div class="surf-widget-primary"><strong>${heightDisplay}</strong><span>feet</span></div>
         <div class="surf-widget-grid">
           <div><span>Period</span><strong>${period.toFixed(0)} sec</strong></div>
           <div><span>Direction</span><strong class="surf-widget-direction"><i style="transform:rotate(${direction}deg)">↓</i>${this.compass(direction)} ${direction.toFixed(0)}°</strong></div>
