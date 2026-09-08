@@ -97,7 +97,7 @@
       .search { width: min(280px, 100%); padding: 12px 16px; border: 1px solid var(--line); border-radius: 12px; outline: none; color: var(--ink); background: white; }
       .search:focus { border-color: var(--ocean); box-shadow: 0 0 0 3px rgb(20 125 161 / 0.12); }
 
-      .table-shell { overflow: hidden; border: 1px solid var(--line); border-radius: 22px; background: var(--card); box-shadow: var(--shadow); }
+      .table-shell { overflow: visible; border: 1px solid var(--line); border-radius: 22px; background: var(--card); box-shadow: var(--shadow); }
       table { width: 100%; border-collapse: collapse; }
       th { padding: 16px 18px; color: var(--muted); background: #f7fbfc; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-align: right; text-transform: uppercase; }
       th:first-child { text-align: left; }
@@ -106,16 +106,45 @@
       tbody tr:hover { background: #f8fcfd; }
       .spot-cell { display: flex; align-items: center; gap: 13px; text-align: left; }
       .rank { display: grid; flex: 0 0 34px; height: 34px; place-items: center; border-radius: 10px; color: var(--ocean); background: #e8f5f8; font-size: 12px; font-weight: 800; }
-      .spot-name { display: block; font-weight: 800; letter-spacing: -0.01em; }
+      .spot-name { display: block; color: var(--ink); font-weight: 800; letter-spacing: -0.01em; text-decoration: none; }
+      .spot-name:hover, .spot-name:focus-visible { color: var(--ocean); text-decoration: underline; text-underline-offset: 3px; }
       .spot-place { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; }
       .metric { font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
       .metric small { margin-left: 2px; color: var(--muted); font-size: 10px; font-weight: 700; text-transform: uppercase; }
       .direction { display: inline-flex; align-items: center; justify-content: flex-end; gap: 7px; min-width: 78px; }
       .direction-arrow { display: inline-grid; width: 27px; height: 27px; place-items: center; border-radius: 50%; color: var(--ocean); background: #e8f5f8; font-size: 15px; }
-      .rating { display: inline-flex; align-items: center; gap: 7px; padding: 6px 10px; border-radius: 999px; background: #eef3f5; color: var(--small); font-size: 11px; font-weight: 800; text-transform: uppercase; }
+      .condition-wrap { position: relative; display: inline-block; }
+      .rating { display: inline-flex; align-items: center; gap: 7px; padding: 6px 10px; border: 0; border-radius: 999px; background: #eef3f5; color: var(--small); cursor: help; font-size: 11px; font-weight: 800; text-transform: uppercase; }
       .rating::before { width: 7px; height: 7px; border-radius: 50%; background: currentColor; content: ""; }
       .rating.good { color: var(--good); background: #e7f6f1; }
       .rating.fair { color: var(--fair); background: #fff2df; }
+      .rating:focus-visible { outline: 2px solid var(--ocean); outline-offset: 3px; }
+      .condition-tooltip {
+        position: absolute;
+        z-index: 10;
+        right: 0;
+        bottom: calc(100% + 10px);
+        width: 220px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        color: white;
+        background: var(--ink);
+        box-shadow: 0 12px 28px rgb(15 48 68 / 0.24);
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.45;
+        text-align: left;
+        text-transform: none;
+        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(4px);
+        transition: opacity 140ms ease, transform 140ms ease, visibility 140ms ease;
+      }
+      .condition-tooltip::after { position: absolute; top: 100%; right: 22px; border: 6px solid transparent; border-top-color: var(--ink); content: ""; }
+      .condition-wrap.is-open .condition-tooltip,
+      .condition-wrap:focus-within .condition-tooltip { visibility: visible; opacity: 1; transform: translateY(0); }
+      @media (hover: hover) { .condition-wrap:hover .condition-tooltip { visibility: visible; opacity: 1; transform: translateY(0); } }
       .loading-row td { padding: 64px 20px; color: var(--muted); text-align: center; }
       .empty { padding: 60px 20px; color: var(--muted); text-align: center; }
       .meta { display: flex; justify-content: space-between; gap: 20px; margin: 14px 4px 0; color: var(--muted); font-size: 12px; }
@@ -156,6 +185,7 @@
 
       .site-footer { padding: 32px 0; background: #172c3e; color: white; }
       .footer-content { text-align: center; }
+      .footer-board { display: block; width: 150px; height: auto; margin: -2px auto 12px; }
       .footer-text { margin: 0 0 18px; color: #d9e4e9; }
       .footer-decent { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-bottom: 18px; }
       .footer-decent > a { display: inline-flex; padding: 0; border: 0; background: transparent; }
@@ -192,6 +222,8 @@
         td::before { display: block; margin-bottom: 5px; color: var(--muted); content: attr(data-label); font-size: 9px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
         td:first-child::before { display: none; }
         .direction { justify-content: flex-start; }
+        .condition-tooltip { right: auto; left: 0; }
+        .condition-tooltip::after { right: auto; left: 22px; }
         .loading-row { display: block; }
         .loading-row td { padding: 50px 0; }
       }
@@ -306,6 +338,7 @@
 
     <footer class="site-footer">
       <div class="container footer-content">
+        <img class="footer-board" src="/assets/images/decent-board-footer.png" alt="Decent icon on a surfboard" width="600" height="400" loading="lazy" />
         <p class="footer-text">Finding decent waves, surfs up brah!</p>
         <div class="footer-decent">
           <a href="https://decentsoftware.llc/" target="_blank" rel="noopener" aria-label="Decent Software LLC"><img src="assets/images/decent.png" alt="decent" class="footer-logo-image" width="1200" height="478" loading="lazy" /></a>
@@ -334,6 +367,7 @@
         ["Ala Moana Bowls", "Honolulu, HI", "hawaii", 21.282, -157.848]
       ].map(([name, place, region, lat, lon], index) => ({
         name, place, region, lat, lon,
+        slug: name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
         rank: index < 10 ? index + 1 : index < 20 ? index - 9 : index - 19
       }));
 
@@ -349,11 +383,16 @@
       };
       const rating = (height, period) => {
         if (!Number.isFinite(height) || !Number.isFinite(period)) return ["Unavailable", ""];
-        const energy = height * period;
         if (height >= 3 && period >= 10) return ["Good", "good"];
-        if (energy >= 18) return ["Fair", "fair"];
+        if (height >= 2 && period >= 8) return ["Fair", "fair"];
         return ["Small", ""];
       };
+      const ratingRule = (label) => ({
+        Good: "Good means 3+ ft with a period of 10+ sec.",
+        Fair: "Fair means 2+ ft waves with an 8+ sec period.",
+        Small: "Small means conditions fall below the Fair threshold.",
+        Unavailable: "Wave height or period data is currently unavailable."
+      })[label];
       const value = (number, digits = 1) => Number.isFinite(number) ? number.toFixed(digits) : "—";
 
       function render() {
@@ -364,12 +403,12 @@
         body.innerHTML = visible.map((spot) => {
           const [label, className] = rating(spot.waveHeight, spot.wavePeriod);
           return `<tr>
-            <td data-label="Surf spot"><div class="spot-cell"><span class="rank">${spot.rank}</span><span><strong class="spot-name">${spot.name}</strong><span class="spot-place">${spot.place}</span></span></div></td>
+            <td data-label="Surf spot"><div class="spot-cell"><span class="rank">${spot.rank}</span><span><a class="spot-name" href="/spots/${spot.slug}/">${spot.name}</a><span class="spot-place">${spot.place}</span></span></div></td>
             <td data-label="Wave height"><span class="metric">${value(spot.waveHeight)}<small>ft</small></span></td>
             <td data-label="Period"><span class="metric">${value(spot.wavePeriod, 0)}<small>sec</small></span></td>
             <td data-label="Direction"><span class="direction"><span class="direction-arrow" style="transform:rotate(${value(spot.waveDirection, 0)}deg)">↓</span><span class="metric">${compass(spot.waveDirection)}</span></span></td>
             <td data-label="Water"><span class="metric">${value(spot.waterTemperature, 0)}<small>°F</small></span></td>
-            <td data-label="Conditions"><span class="rating ${className}">${label}</span></td>
+            <td data-label="Conditions"><span class="condition-wrap"><button class="rating ${className}" type="button" aria-expanded="false" aria-describedby="condition-${spot.rank}-${spot.region}">${label}</button><span class="condition-tooltip" id="condition-${spot.rank}-${spot.region}" role="tooltip">${ratingRule(label)} ${label === "Unavailable" ? "Current reading unavailable." : `Current reading: ${value(spot.waveHeight)} ft at ${value(spot.wavePeriod, 0)} sec.`}</span></span></td>
           </tr>`;
         }).join("");
         document.querySelector("#spot-count").textContent = visible.length;
@@ -411,6 +450,31 @@
         render();
       }));
       search.addEventListener("input", render);
+      body.addEventListener("click", (event) => {
+        const button = event.target.closest(".rating");
+        if (!button) return;
+        event.stopPropagation();
+        const wrap = button.closest(".condition-wrap");
+        const willOpen = !wrap.classList.contains("is-open");
+        document.querySelectorAll(".condition-wrap.is-open").forEach((item) => {
+          item.classList.remove("is-open");
+          item.querySelector(".rating")?.setAttribute("aria-expanded", "false");
+        });
+        wrap.classList.toggle("is-open", willOpen);
+        button.setAttribute("aria-expanded", String(willOpen));
+        if (!willOpen) button.blur();
+      });
+      document.addEventListener("click", () => {
+        document.querySelectorAll(".condition-wrap.is-open").forEach((item) => {
+          item.classList.remove("is-open");
+          const button = item.querySelector(".rating");
+          button?.setAttribute("aria-expanded", "false");
+          button?.blur();
+        });
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") document.dispatchEvent(new MouseEvent("click"));
+      });
       loadConditions();
       window.setInterval(loadConditions, 60 * 60 * 1000);
     </script>
