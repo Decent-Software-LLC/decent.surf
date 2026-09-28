@@ -38,7 +38,12 @@ class SurfConditions extends HTMLElement {
   }
 
   compass(degrees) {
+    if (!Number.isFinite(degrees)) return "—";
     return ["N", "NE", "E", "SE", "S", "SW", "W", "NW"][Math.round(degrees / 45) % 8];
+  }
+
+  value(number, digits = 0) {
+    return Number.isFinite(number) ? number.toFixed(digits) : "—";
   }
 
   renderLoading() {
@@ -50,12 +55,16 @@ class SurfConditions extends HTMLElement {
   }
 
   renderConditions(spot, current, timezone) {
-    const height = Number(current.wave_height);
-    const period = Number(current.wave_period);
-    const direction = Number(current.wave_direction);
-    const temperature = Number(current.sea_surface_temperature);
-    const condition = height >= 3 && period >= 10 ? "Good" : height >= 2 && period >= 8 ? "Fair" : "Small";
-    const heightDisplay = height.toFixed(1).replace(".", '<span class="surf-widget-decimal">.</span>');
+    const number = (value) => value === null || value === undefined ? NaN : Number(value);
+    const height = number(current.wave_height);
+    const period = number(current.wave_period);
+    const direction = number(current.wave_direction);
+    const temperature = number(current.sea_surface_temperature);
+    const isDecent = height >= 3 && period >= 10;
+    const isFair = !isDecent && height >= 2 && period >= 8;
+    const hasConditions = Number.isFinite(height) && Number.isFinite(period);
+    const condition = !hasConditions ? "Unavailable" : isDecent ? "Decent" : isFair ? "Fair" : "Small";
+    const heightDisplay = this.value(height, 1).replace(".", '<span class="surf-widget-decimal">.</span>');
 
     this.innerHTML = `
       <article class="surf-widget-card">
@@ -66,9 +75,9 @@ class SurfConditions extends HTMLElement {
         </div>
         <div class="surf-widget-primary"><strong>${heightDisplay}</strong><span>feet</span></div>
         <div class="surf-widget-grid">
-          <div><span>Period</span><strong>${period.toFixed(0)} sec</strong></div>
-          <div><span>Direction</span><strong class="surf-widget-direction"><i style="transform:rotate(${direction}deg)">↓</i>${this.compass(direction)} ${direction.toFixed(0)}°</strong></div>
-          <div><span>Water</span><strong>${temperature.toFixed(0)}°F</strong></div>
+          <div><span>Period</span><strong>${this.value(period)} sec</strong></div>
+          <div><span>Direction</span><strong class="surf-widget-direction"><i style="transform:rotate(${Number.isFinite(direction) ? direction : 0}deg)">↓</i>${this.compass(direction)} ${this.value(direction)}°</strong></div>
+          <div><span>Water</span><strong>${this.value(temperature)}°F</strong></div>
         </div>
         <p class="surf-widget-time">Updated ${current.time.replace("T", " ")} ${timezone || "local time"}</p>
       </article>`;
