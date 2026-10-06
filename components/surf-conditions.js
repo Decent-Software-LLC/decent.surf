@@ -2,8 +2,19 @@ class SurfConditions extends HTMLElement {
   static get observedAttributes() { return ["latitude", "longitude", "spot"]; }
 
   connectedCallback() {
+    this.rememberVisit();
     this.renderLoading();
     this.load();
+  }
+
+  rememberVisit() {
+    const slug = window.location.pathname.match(/\/spots\/([^/]+)/)?.[1];
+    if (!slug) return;
+    try {
+      localStorage.setItem("decentSurfRecentSpot", JSON.stringify({ slug, visitedAt: Date.now() }));
+    } catch {
+      // Recent spots are optional when browser storage is unavailable.
+    }
   }
 
   attributeChangedCallback() {
