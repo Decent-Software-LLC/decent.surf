@@ -5,7 +5,7 @@ class ShareSpot extends HTMLElement {
     const root = this.attachShadow({ mode: "open" });
     root.innerHTML = `
       <style>
-        :host { display:inline-flex; margin-left:.2em; vertical-align:.04em; }
+        :host { display:inline-flex; margin:0; }
         button { display:inline-grid; width:.82em; height:.82em; padding:0; border:0; color:inherit; background:transparent; cursor:pointer; font:inherit; place-items:center; }
         button:hover { color:#147da1; }
         button:focus-visible { border-radius:.12em; outline:3px solid rgb(20 125 161/.25); outline-offset:3px; }
