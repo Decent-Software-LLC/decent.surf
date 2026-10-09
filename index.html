@@ -471,14 +471,14 @@
       const rating = (height, period) => {
         if (!Number.isFinite(height) || !Number.isFinite(period)) return ["Unavailable", ""];
         const isDecent = height >= 3 && period >= 10;
-        const isFair = !isDecent && height >= 2 && period >= 8;
+        const isFair = !isDecent && height >= 2;
         if (isDecent) return ["Decent", "decent"];
         if (isFair) return ["Fair", "fair"];
         return ["Small", ""];
       };
       const ratingRule = (label) => ({
         Decent: "Decent means 3+ ft waves with a 10+ sec period.",
-        Fair: "Fair means at least 2 ft with an 8+ sec period, but below the Decent threshold.",
+        Fair: "Fair means 2+ ft waves that do not meet the Decent threshold of 3+ ft with a 10+ sec period.",
         Small: "Small means conditions fall below the Fair threshold.",
         Unavailable: "Wave height or period data is currently unavailable."
       })[label];

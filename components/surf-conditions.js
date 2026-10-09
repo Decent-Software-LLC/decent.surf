@@ -72,7 +72,7 @@ class SurfConditions extends HTMLElement {
     const direction = number(current.wave_direction);
     const temperature = number(current.sea_surface_temperature);
     const isDecent = height >= 3 && period >= 10;
-    const isFair = !isDecent && height >= 2 && period >= 8;
+    const isFair = !isDecent && height >= 2;
     const hasConditions = Number.isFinite(height) && Number.isFinite(period);
     const condition = !hasConditions ? "Unavailable" : isDecent ? "Decent" : isFair ? "Fair" : "Small";
     const heightDisplay = this.value(height, 1).replace(".", '<span class="surf-widget-decimal">.</span>');
