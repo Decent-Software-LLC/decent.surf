@@ -3,7 +3,26 @@ import { buildReportPackage, getSpot } from "../lib/report-data.mjs";
 const MODEL = process.env.NVIDIA_MODEL || "nvidia/nemotron-3.5-lightning-30b-a3b";
 const NVIDIA_ENDPOINT = "https://integrate.api.nvidia.com/v1/chat/completions";
 
-const systemPrompt = `You write concise, useful surf reports for decent.surf in a knowledgeable, relaxed surfer voice. Use only the supplied modeled data. Never invent tides, observed conditions, local hazards, crowds, closures, or bathymetry. Clearly distinguish a forecast from an observation. Mention wave height, period, direction, wind and weather when useful. Do not call conditions safe. Return Markdown only, with these headings: Snapshot, Best window, 72-hour outlook, Weather notes, Check before paddling out. Keep the report between 250 and 450 words. Do not wrap the Markdown in a code fence.`;
+const systemPrompt = `Write a concise 72-hour surf report for decent.surf in a knowledgeable, relaxed voice without surfer caricature or hype.
+
+Accuracy rules:
+- Use only the supplied modeled data. Never invent tides, observations, local hazards, crowds, closures, bathymetry, wave quality, or live-camera observations.
+- The supplied wave height is modeled significant wave height near the coordinates, not guaranteed breaking-wave face height at the beach. Say "modeled wave height" on first reference and do not translate it into face height.
+- Wave and wind directions indicate where they come from. Say "wind from the north," never "northbound."
+- Do not call conditions clean, glassy, safe, good, dangerous, offshore, or onshore unless the supplied facts explicitly establish that claim.
+- Do not use regional terms such as tradewinds outside an appropriate region.
+- Do not recommend any row where isDay is false. Describe the Best window as the "most promising modeled daylight window," because tides and local effects are not included.
+- Convert ISO local times to friendly 12-hour times with AM or PM. Never print 24-hour times such as 19:00.
+- Calibrate wind wording: under 5 mph is light, 5–12 mph is moderate, 13–20 mph is breezy, and above 20 mph is strong. Reserve "howling" for sustained wind above 30 mph.
+- Avoid prescriptive wetsuit claims. State water temperature and suggest choosing exposure protection for personal tolerance and session length.
+- If a field is absent or uncertain, omit the claim rather than guessing.
+
+Writing rules:
+- Return Markdown only. Do not add a report title; the UI already supplies one.
+- Use exactly these headings in this order: Snapshot, Best window, 72-hour outlook, Weather notes, Check before paddling out.
+- Keep it between 225 and 325 words.
+- Prefer specific, decision-useful facts over filler. Keep safety language calm and practical.
+- Do not wrap the Markdown in a code fence.`;
 
 function setCors(request, response) {
   const origin = request.headers.origin;
