@@ -64,13 +64,21 @@ class AiSurfReport extends HTMLElement {
       <div class="ai-report-copy-wrap is-collapsed">
         <div class="ai-report-copy" id="ai-report-copy">${this.markdown(data.markdown)}</div>
       </div>
-      <button class="ai-report-toggle" type="button" aria-expanded="false" aria-controls="ai-report-copy">Read more</button>
-      <p class="ai-report-meta">Generated ${generated.toLocaleString([], { dateStyle: "medium", timeStyle: "short" })} from Open-Meteo modeled marine and weather data. Verify local conditions before entering the water.</p>
+      <div class="ai-report-actions">
+        <button class="ai-report-audio" type="button" aria-label="Play audio surf report">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 9v6h4l5 4V5L9 9H5Zm11.5 3a3.5 3.5 0 0 0-1.5-2.87v5.74A3.5 3.5 0 0 0 16.5 12Zm-1.5-6.92v2.06a5.5 5.5 0 0 1 0 9.72v2.06a7.5 7.5 0 0 0 0-13.84Z"/></svg>
+          <span>Play</span>
+        </button>
+        <button class="ai-report-toggle" type="button" aria-expanded="false" aria-controls="ai-report-copy">Read more</button>
+      </div>
+      <p class="ai-report-audio-status" role="status" aria-live="polite"></p>
+      <p class="ai-report-meta">Generated ${generated.toLocaleString([], { dateStyle: "medium", timeStyle: "short" })} from modeled marine, weather and available NOAA/NWS safety data. Verify local conditions before entering the water.</p>
     </section>`;
 
     const wrap = this.querySelector(".ai-report-copy-wrap");
     const copy = this.querySelector(".ai-report-copy");
     const toggle = this.querySelector(".ai-report-toggle");
+    const audioButton = this.querySelector(".ai-report-audio");
     requestAnimationFrame(() => {
       const bestWindowHeading = [...copy.querySelectorAll("h3")].find((heading) => heading.textContent.trim().toLowerCase() === "best window");
       const cutoff = bestWindowHeading ? bestWindowHeading.offsetTop + bestWindowHeading.offsetHeight + 18 : 250;
@@ -82,6 +90,62 @@ class AiSurfReport extends HTMLElement {
       toggle.textContent = expanded ? "Read more" : "Show less";
       wrap.classList.toggle("is-collapsed", expanded);
     });
+    audioButton.addEventListener("click", () => this.toggleAudio(data, audioButton));
+  }
+
+  setAudioButton(button, state) {
+    const label = button.querySelector("span");
+    button.classList.toggle("is-playing", state === "playing");
+    button.disabled = state === "loading";
+    label.textContent = state === "loading" ? "Preparing…" : state === "playing" ? "Pause" : "Play";
+    button.setAttribute("aria-label", `${label.textContent.replace("…", "")} audio surf report`);
+  }
+
+  async toggleAudio(data, button) {
+    const status = this.querySelector(".ai-report-audio-status");
+    if (this.reportAudio) {
+      if (this.reportAudio.paused) {
+        await this.reportAudio.play();
+        this.setAudioButton(button, "playing");
+      } else {
+        this.reportAudio.pause();
+        this.setAudioButton(button, "ready");
+      }
+      return;
+    }
+
+    this.setAudioButton(button, "loading");
+    status.textContent = "Generating the audio report…";
+    try {
+      const response = await fetch("/api/report-audio", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ spot: data.spot, markdown: data.markdown })
+      });
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.error || `Audio service returned ${response.status}`);
+      }
+      this.audioUrl = URL.createObjectURL(await response.blob());
+      this.reportAudio = new Audio(this.audioUrl);
+      this.reportAudio.addEventListener("ended", () => this.setAudioButton(button, "ready"));
+      this.reportAudio.addEventListener("error", () => {
+        status.textContent = "Audio playback was interrupted. Please try again.";
+        this.setAudioButton(button, "ready");
+      });
+      await this.reportAudio.play();
+      status.textContent = "";
+      this.setAudioButton(button, "playing");
+    } catch (error) {
+      console.error(error);
+      status.textContent = "Audio is temporarily unavailable. Please try again.";
+      this.setAudioButton(button, "ready");
+    }
+  }
+
+  disconnectedCallback() {
+    this.reportAudio?.pause();
+    if (this.audioUrl) URL.revokeObjectURL(this.audioUrl);
   }
 
   async load() {
