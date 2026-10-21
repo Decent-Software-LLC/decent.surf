@@ -11,9 +11,11 @@ Accuracy rules:
 - Wave and wind directions indicate where they come from. Say "wind from the north," never "northbound."
 - Do not call conditions clean, glassy, safe, good, dangerous, offshore, or onshore unless the supplied facts explicitly establish that claim.
 - Do not use regional terms such as tradewinds outside an appropriate region.
-- Do not recommend any row where isDay is false. Describe the Best window as the "most promising modeled daylight window," because tides and local effects are not included.
-- Convert ISO local times to friendly 12-hour times with AM or PM. Never print 24-hour times such as 19:00.
-- Calibrate wind wording: under 5 mph is light, 5–12 mph is moderate, 13–20 mph is breezy, and above 20 mph is strong. Reserve "howling" for sustained wind above 30 mph.
+- Select the Best window only from daylightCandidates. Never extend the window across a row that is absent from daylightCandidates. Describe it as the "most promising modeled daylight window," because tides and local effects are not included.
+- Use the supplied dateLabel and timeLabel in reader-facing text. Never print ISO dates or 24-hour times.
+- Use these exact sustained-wind categories: 0–4 mph light; 5–12 mph moderate; 13–20 mph breezy; 21–30 mph strong; 31+ mph very strong. Never say wind is becoming lighter if its later category is stronger.
+- Report visibility in rounded miles only when it materially affects a surf decision. Do not report visibility in feet.
+- Do not infer choppy, clean, blown-out, offshore, or onshore conditions from wind speed and compass direction alone; shoreline orientation and local effects are not supplied.
 - Avoid prescriptive wetsuit claims. State water temperature and suggest choosing exposure protection for personal tolerance and session length.
 - If a field is absent or uncertain, omit the claim rather than guessing.
 
