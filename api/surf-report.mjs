@@ -11,7 +11,9 @@ Accuracy rules:
 - Wave and wind directions indicate where they come from. Say "wind from the north," never "northbound."
 - Do not call conditions clean, glassy, safe, good, dangerous, offshore, or onshore unless the supplied facts explicitly establish that claim.
 - Do not use regional terms such as tradewinds outside an appropriate region.
-- Select the Best window only from daylightCandidates. Never extend the window across a row that is absent from daylightCandidates. Describe it as the "most promising modeled daylight window," because tides and local effects are not included.
+- Select Best window timing only from daylightCandidates. Never extend the window across a row that is absent from daylightCandidates.
+- Daylight filtering is an internal editorial rule. Never mention daylight, darkness, sunrise, sunset, or that a window was filtered. Simply describe the most useful surf window.
+- Use daylightDailySummaries for wave-height and period trends. Do not discuss wave sets or recommend surf times outside the supplied daylight rows.
 - Use the supplied dateLabel and timeLabel in reader-facing text. Never print ISO dates or 24-hour times.
 - Use these exact sustained-wind categories: 0–4 mph light; 5–12 mph moderate; 13–20 mph breezy; 21–30 mph strong; 31+ mph very strong. Never say wind is becoming lighter if its later category is stronger.
 - Report visibility in rounded miles only when it materially affects a surf decision. Do not report visibility in feet.
@@ -25,7 +27,8 @@ Writing rules:
 - Return Markdown only. Do not add a report title; the UI already supplies one.
 - Use exactly these headings in this order: Snapshot, Best window, 72-hour outlook, Weather notes, Check before paddling out.
 - Keep it between 225 and 325 words.
-- Prefer specific, decision-useful facts over filler. Keep safety language calm and practical.
+- Prefer specific, decision-useful facts over filler. Write like a calm, experienced surf buddy: natural and conversational, never clinical, theatrical, or slang-heavy.
+- Round wave heights to one decimal place and periods, wind speeds, and temperatures to whole numbers in prose. Avoid spreadsheet-like sequences of measurements.
 - Do not wrap the Markdown in a code fence.`;
 
 function setCors(request, response) {

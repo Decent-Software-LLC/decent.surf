@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: ".env.local", quiet: true });
 
-const VOICE_ID = process.env.ELEVENLABS_VOICE_ID || "JBFqnCBsd6RMkjVDRZzb";
+const VOICE_ID = process.env.ELEVENLABS_VOICE_ID || "TX3LPaxmHKxFdv7VOQHJ";
 const MODEL_ID = process.env.ELEVENLABS_MODEL_ID || "eleven_flash_v2_5";
 
 function setCors(request, response) {
@@ -13,16 +13,42 @@ function setCors(request, response) {
   response.setHeader("Vary", "Origin");
 }
 
-function spokenText(markdown, spot) {
-  const report = String(markdown || "")
+function cleanSpeech(value) {
+  return String(value || "")
     .replace(/^#{1,6}\s+/gm, "")
     .replace(/\*\*(.*?)\*\*/g, "$1")
     .replace(/^[-*]\s+/gm, "")
     .replace(/\[(.*?)\]\(.*?\)/g, "$1")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function reportSections(markdown) {
+  const sections = new Map();
+  const normalized = String(markdown || "").replace(
+    /^(?:#{1,3}\s*|\*\*)?(Snapshot|Best window|72-hour outlook|Weather notes|Check before paddling out)(?:\*\*)?\s*$/gim,
+    "### $1"
+  );
+  for (const block of normalized.split(/(?=^#{1,3}\s+)/m)) {
+    const match = block.match(/^#{1,3}\s+([^\n]+)\n?([\s\S]*)$/);
+    if (!match) continue;
+    const heading = match[1].trim().toLowerCase();
+    sections.set(heading, cleanSpeech(match[2]));
+  }
+  return sections;
+}
+
+export function spokenText(markdown, spot) {
+  const sections = reportSections(markdown);
   const location = String(spot || "").replace(/[^a-zA-Z0-9 .,'-]/g, "").trim();
-  return `${location ? `${location} surf report. ` : ""}${report}`;
+  const parts = [
+    location ? `${location} surf report.` : "Your surf report.",
+    sections.get("snapshot") ? `Right now. ${sections.get("snapshot")}` : "",
+    sections.get("best window") ? `Best window. ${sections.get("best window")}` : "",
+    sections.get("check before paddling out") ? `Before you paddle out. ${sections.get("check before paddling out")}` : ""
+  ].filter(Boolean);
+  const abridged = parts.length > 1 ? parts.join(" ") : cleanSpeech(markdown);
+  return abridged.length <= 1800 ? abridged : `${abridged.slice(0, 1797).trimEnd()}...`;
 }
 
 async function streamToBuffer(stream) {
@@ -51,7 +77,7 @@ export default async function handler(request, response) {
       modelId: MODEL_ID,
       outputFormat: "mp3_44100_128",
       applyTextNormalization: "on",
-      voiceSettings: { stability: 0.55, similarityBoost: 0.7 }
+      voiceSettings: { stability: 0.42, similarityBoost: 0.78 }
     });
     const audio = await streamToBuffer(audioStream);
     response.setHeader("Content-Type", "audio/mpeg");
