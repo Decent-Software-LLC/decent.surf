@@ -13,7 +13,7 @@ a compact factual package, and asks an NVIDIA hosted model to write the report.
 
 Configure the Vercel project with a Secret environment variable named
 `NVIDIA_API_KEY`. The optional `NVIDIA_MODEL` Config variable defaults to
-`meta/llama-3.1-8b-instruct`.
+`nvidia/nemotron-3.5-lightning-30b-a3b`.
 
 The prototype endpoint is:
 

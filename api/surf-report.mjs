@@ -1,6 +1,6 @@
 import { buildReportPackage, getSpot } from "../lib/report-data.mjs";
 
-const MODEL = process.env.NVIDIA_MODEL || "meta/llama-3.1-8b-instruct";
+const MODEL = process.env.NVIDIA_MODEL || "nvidia/nemotron-3.5-lightning-30b-a3b";
 const NVIDIA_ENDPOINT = "https://integrate.api.nvidia.com/v1/chat/completions";
 
 const systemPrompt = `You write concise, useful surf reports for decent.surf in a knowledgeable, relaxed surfer voice. Use only the supplied modeled data. Never invent tides, observed conditions, local hazards, crowds, closures, or bathymetry. Clearly distinguish a forecast from an observation. Mention wave height, period, direction, wind and weather when useful. Do not call conditions safe. Return Markdown only, with these headings: Snapshot, Best window, 72-hour outlook, Weather notes, Check before paddling out. Keep the report between 250 and 450 words. Do not wrap the Markdown in a code fence.`;
@@ -77,4 +77,3 @@ export default async function handler(request, response) {
     return response.status(502).json({ error: "The AI surf report is temporarily unavailable" });
   }
 }
-
