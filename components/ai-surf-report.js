@@ -61,9 +61,27 @@ class AiSurfReport extends HTMLElement {
     const generated = new Date(data.generatedAt);
     this.innerHTML = `<section class="ai-report-card" aria-labelledby="ai-report-heading">
       <div class="ai-report-heading"><div><span class="ai-report-kicker">AI surf report</span><h2 id="ai-report-heading">Your 72-hour read</h2></div><span class="ai-report-badge">Fresh</span></div>
-      <div class="ai-report-copy">${this.markdown(data.markdown)}</div>
+      <div class="ai-report-copy-wrap is-collapsed">
+        <div class="ai-report-copy" id="ai-report-copy">${this.markdown(data.markdown)}</div>
+      </div>
+      <button class="ai-report-toggle" type="button" aria-expanded="false" aria-controls="ai-report-copy">Read more</button>
       <p class="ai-report-meta">Generated ${generated.toLocaleString([], { dateStyle: "medium", timeStyle: "short" })} from Open-Meteo modeled marine and weather data. Verify local conditions before entering the water.</p>
     </section>`;
+
+    const wrap = this.querySelector(".ai-report-copy-wrap");
+    const copy = this.querySelector(".ai-report-copy");
+    const toggle = this.querySelector(".ai-report-toggle");
+    requestAnimationFrame(() => {
+      const bestWindowHeading = [...copy.querySelectorAll("h3")].find((heading) => heading.textContent.trim().toLowerCase() === "best window");
+      const cutoff = bestWindowHeading ? bestWindowHeading.offsetTop + bestWindowHeading.offsetHeight + 18 : 250;
+      wrap.style.setProperty("--ai-report-collapsed-height", `${cutoff}px`);
+    });
+    toggle.addEventListener("click", () => {
+      const expanded = toggle.getAttribute("aria-expanded") === "true";
+      toggle.setAttribute("aria-expanded", String(!expanded));
+      toggle.textContent = expanded ? "Read more" : "Show less";
+      wrap.classList.toggle("is-collapsed", expanded);
+    });
   }
 
   async load() {
@@ -84,4 +102,3 @@ class AiSurfReport extends HTMLElement {
 }
 
 customElements.define("ai-surf-report", AiSurfReport);
-
