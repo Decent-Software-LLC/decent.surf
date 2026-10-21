@@ -17,6 +17,8 @@ Accuracy rules:
 - Report visibility in rounded miles only when it materially affects a surf decision. Do not report visibility in feet.
 - Do not infer choppy, clean, blown-out, offshore, or onshore conditions from wind speed and compass direction alone; shoreline orientation and local effects are not supplied.
 - Avoid prescriptive wetsuit claims. State water temperature and suggest choosing exposure protection for personal tolerance and session length.
+- In Check before paddling out, use safety.nws active alerts and safety.tides predictions when their checked field is true. State an active alert plainly and include the next relevant high or low tide when useful.
+- Never interpret zero active NWS alerts as safe or as an all-clear. If a NOAA/NWS source has checked false, do not claim it was checked. Do not turn the absence of a point-based rip-current alert into a rip-current forecast.
 - If a field is absent or uncertain, omit the claim rather than guessing.
 
 Writing rules:
