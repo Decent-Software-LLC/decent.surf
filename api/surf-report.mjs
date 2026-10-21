@@ -16,6 +16,14 @@ function cleanMarkdown(value) {
   return String(value || "").trim().replace(/^```(?:markdown)?\s*/i, "").replace(/\s*```$/, "");
 }
 
+function messageContent(message) {
+  if (typeof message?.content === "string") return message.content;
+  if (Array.isArray(message?.content)) {
+    return message.content.map((part) => typeof part === "string" ? part : part?.text || part?.content || "").join("\n");
+  }
+  return "";
+}
+
 export default async function handler(request, response) {
   setCors(request, response);
   if (request.method === "OPTIONS") {
@@ -42,9 +50,9 @@ export default async function handler(request, response) {
           { role: "system", content: systemPrompt },
           { role: "user", content: `Write the surf report from this verified forecast package:\n${JSON.stringify(reportPackage)}` }
         ],
-        temperature: 0.35,
-        top_p: 0.85,
-        max_tokens: 900,
+        temperature: 0.3,
+        max_tokens: 1200,
+        chat_template_kwargs: { enable_thinking: false },
         stream: false
       }),
       signal: AbortSignal.timeout(45000)
@@ -57,8 +65,16 @@ export default async function handler(request, response) {
     }
 
     const completion = await nvidiaResponse.json();
-    const markdown = cleanMarkdown(completion.choices?.[0]?.message?.content);
-    if (markdown.length < 120 || markdown.length > 10000) throw new Error("NVIDIA returned an invalid report");
+    const choice = completion.choices?.[0];
+    const markdown = cleanMarkdown(messageContent(choice?.message));
+    if (markdown.length < 120 || markdown.length > 10000) {
+      console.error("NVIDIA returned an invalid report", {
+        finishReason: choice?.finish_reason || null,
+        contentLength: markdown.length,
+        hasReasoning: Boolean(choice?.message?.reasoning || choice?.message?.reasoning_content)
+      });
+      throw new Error("NVIDIA returned an invalid report");
+    }
 
     response.setHeader("Content-Type", "application/json; charset=utf-8");
     response.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
