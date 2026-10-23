@@ -60,15 +60,14 @@ class AiSurfReport extends HTMLElement {
   renderReport(data) {
     const generated = new Date(data.generatedAt);
     this.innerHTML = `<section class="ai-report-card" aria-labelledby="ai-report-heading">
-      <div class="ai-report-heading"><div><span class="ai-report-kicker">72 hour / AI surf report</span><div class="ai-report-title-row"><h2 id="ai-report-heading">Current and Coming Conditions</h2><button class="ai-report-audio" type="button" data-provider="google" aria-label="Play audio surf report"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 9v6h4l5 4V5L9 9H5Zm11.5 3a3.5 3.5 0 0 0-1.5-2.87v5.74A3.5 3.5 0 0 0 16.5 12Zm-1.5-6.92v2.06a5.5 5.5 0 0 1 0 9.72v2.06a7.5 7.5 0 0 0 0-13.84Z"/></svg><span>Play report</span></button></div></div><span class="ai-report-badge">Fresh</span></div>
+      <div class="ai-report-heading"><div><span class="ai-report-kicker">72 hour / AI surf report</span><div class="ai-report-title-row"><h2 id="ai-report-heading">Current and Coming Conditions</h2><div class="ai-report-audio-wrap"><button class="ai-report-audio" type="button" data-provider="google" aria-label="Play audio surf report"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 9v6h4l5 4V5L9 9H5Zm11.5 3a3.5 3.5 0 0 0-1.5-2.87v5.74A3.5 3.5 0 0 0 16.5 12Zm-1.5-6.92v2.06a5.5 5.5 0 0 1 0 9.72v2.06a7.5 7.5 0 0 0 0-13.84Z"/></svg><span>Play report</span></button><p class="ai-report-audio-status" role="status" aria-live="polite"></p></div></div></div><span class="ai-report-badge">Fresh</span></div>
       <div class="ai-report-copy-wrap is-collapsed">
         <div class="ai-report-copy" id="ai-report-copy">${this.markdown(data.markdown)}</div>
       </div>
       <div class="ai-report-actions">
         <button class="ai-report-toggle" type="button" aria-expanded="false" aria-controls="ai-report-copy">Read more</button>
       </div>
-      <p class="ai-report-audio-status" role="status" aria-live="polite"></p>
-      <p class="ai-report-meta">Generated ${generated.toLocaleString([], { dateStyle: "medium", timeStyle: "short" })} from modeled marine, weather and available NOAA/NWS safety data. Verify local conditions before entering the water.</p>
+      <p class="ai-report-meta">Generated ${generated.toLocaleString([], { dateStyle: "medium", timeStyle: "short" })} from modeled Open-Meteo marine and weather data, with available NOAA/NWS safety alerts and NOAA tide predictions. Verify local conditions before entering the water.</p>
     </section>`;
 
     const wrap = this.querySelector(".ai-report-copy-wrap");

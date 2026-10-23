@@ -25,7 +25,7 @@
     <script type="module" src="/components/live-camera.js"></script>
     <script type="module" src="/components/share-spot.js?v=4"></script>
     <script type="module" src="/components/dawn-patrol.js"></script>
-    <script type="module" src="/components/ai-surf-report.js?v=5"></script>
+    <script type="module" src="/components/ai-surf-report.js?v=6"></script>
     <style>
       :root { color-scheme: light; --ink:#173047; --muted:#65798a; --ocean:#147da1; --dark:#07536f; --foam:#eef7fa; --card:#fff; --line:#d9e8ee; --decent:#13866f; --shadow:0 18px 48px rgb(21 74 96 / .1); }
       * { box-sizing:border-box; }
@@ -92,6 +92,7 @@
       .ai-report-kicker { display:block; margin-bottom:7px; color:#8edcf1; font-size:11px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; }
       .ai-report-heading h2 { margin:0; color:white; font-size:clamp(27px,4vw,40px); letter-spacing:-.04em; }
       .ai-report-title-row { display:flex; align-items:center; flex-wrap:wrap; gap:12px 16px; }
+      .ai-report-audio-wrap { display:flex; flex-direction:column; align-items:flex-start; flex:0 0 auto; }
       .ai-report-badge { flex:0 0 auto; padding:7px 11px; border:1px solid rgb(157 225 241/.22); border-radius:999px; color:#bdeafa; background:rgb(0 25 38/.28); font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
       .ai-report-copy { max-width:780px; color:#e8f7fb; font-size:15px; line-height:1.7; }
       .ai-report-copy-wrap { position:relative; overflow:visible; transition:max-height .3s ease; }
@@ -110,7 +111,7 @@
       .ai-report-audio:disabled { cursor:wait; opacity:.72; }
       .ai-report-toggle:hover,.ai-report-audio:hover { filter:brightness(1.08); }
       .ai-report-toggle:focus-visible,.ai-report-audio:focus-visible { outline:3px solid #8edcf1; outline-offset:3px; }
-      .ai-report-audio-status { min-height:18px; margin:9px 0 0; color:#bdeafa; font-size:11px; }
+      .ai-report-audio-status { min-height:15px; max-width:190px; margin:6px 0 0; color:#bdeafa; font-size:10px; line-height:1.35; }
       .ai-report-loading > p,.ai-report-error > p { margin:0; color:#ccebf4; }
       .ai-report-pulse { display:flex; gap:7px; margin:28px 0 18px; }
       .ai-report-pulse i { width:42px; height:6px; border-radius:999px; background:#45bad7; animation:report-pulse 1.2s ease-in-out infinite; }
