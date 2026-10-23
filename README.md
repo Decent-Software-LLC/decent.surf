@@ -15,8 +15,7 @@ Configure the Vercel project with a Secret environment variable named
 `NVIDIA_API_KEY`. The optional `NVIDIA_MODEL` Config variable defaults to
 `nvidia/nemotron-3.5-lightning-30b-a3b`.
 
-The voice comparison uses `ELEVENLABS_API_KEY` for ElevenLabs and
-`GEMINI_API_KEY` for Google Gemini TTS. Optional `GEMINI_TTS_MODEL` and
+The audio report uses `GEMINI_API_KEY` for Google Gemini TTS. Optional `GEMINI_TTS_MODEL` and
 `GEMINI_TTS_VOICE` variables default to `gemini-3.8-flash-tts` and
 `Zubenelgenubi`.
 

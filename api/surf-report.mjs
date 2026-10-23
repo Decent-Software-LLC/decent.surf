@@ -19,7 +19,10 @@ Accuracy rules:
 - Report visibility in rounded miles only when it materially affects a surf decision. Do not report visibility in feet.
 - Do not infer choppy, clean, blown-out, offshore, or onshore conditions from wind speed and compass direction alone; shoreline orientation and local effects are not supplied.
 - Avoid prescriptive wetsuit claims. State water temperature and suggest choosing exposure protection for personal tolerance and session length.
-- In Check before paddling out, use safety.nws active alerts and safety.tides predictions when their checked field is true. State an active alert plainly and include the next relevant high or low tide when useful.
+- In Check before paddling out, use safety.nws shoreRelevantAlerts and safety.tides predictions when their checked field is true. State a relevant shore alert plainly and include the next relevant high or low tide when useful.
+- For safety reporting, use only safety.nws shoreRelevantAlerts: rip-current statements, high-surf advisories, beach-hazard statements, and other alerts that directly affect the shoreline or surf zone.
+- Do not mention or summarize Small Craft Advisories, Hazardous Seas Warnings, High Seas Forecasts, or other offshore/mariner warnings. The report is for people deciding whether to enter the water from shore.
+- Give rip-current and shore-break hazards priority when they are supplied. Never invent a rip-current forecast from wave height, wind, or the absence of an alert.
 - Never interpret zero active NWS alerts as safe or as an all-clear. If a NOAA/NWS source has checked false, do not claim it was checked. Do not turn the absence of a point-based rip-current alert into a rip-current forecast.
 - If a field is absent or uncertain, omit the claim rather than guessing.
 
@@ -103,9 +106,9 @@ export default async function handler(request, response) {
     }
 
     response.setHeader("Content-Type", "application/json; charset=utf-8");
-    response.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
-    response.setHeader("CDN-Cache-Control", "public, s-maxage=3600, stale-while-revalidate=300");
-    response.setHeader("Vercel-CDN-Cache-Control", "public, s-maxage=3600, stale-while-revalidate=300");
+    response.setHeader("Cache-Control", "public, max-age=86400, immutable");
+    response.setHeader("CDN-Cache-Control", "public, s-maxage=86400");
+    response.setHeader("Vercel-CDN-Cache-Control", "public, s-maxage=86400");
     return response.status(200).json({
       spot: reportPackage.spot.name,
       generatedAt: reportPackage.generatedAt,

@@ -43,7 +43,7 @@ class AiSurfReport extends HTMLElement {
 
   renderLoading() {
     this.innerHTML = `<section class="ai-report-card ai-report-loading" aria-live="polite">
-      <div class="ai-report-heading"><div><span class="ai-report-kicker">AI surf report</span><h2>Reading the next 72 hours…</h2></div><span class="ai-report-badge">Building</span></div>
+      <div class="ai-report-heading"><div><span class="ai-report-kicker">72 hour / AI surf report</span><h2>Reading the next 72 hours…</h2></div><span class="ai-report-badge">Building</span></div>
       <div class="ai-report-pulse"><i></i><i></i><i></i></div>
       <p>Combining modeled waves, wind and weather for this break.</p>
     </section>`;
@@ -51,7 +51,7 @@ class AiSurfReport extends HTMLElement {
 
   renderError(message) {
     this.innerHTML = `<section class="ai-report-card ai-report-error" aria-live="polite">
-      <div class="ai-report-heading"><div><span class="ai-report-kicker">AI surf report</span><h2>Report unavailable</h2></div></div>
+      <div class="ai-report-heading"><div><span class="ai-report-kicker">72 hour / AI surf report</span><h2>Report unavailable</h2></div></div>
       <p>${this.escape(message)}</p><button type="button">Try again</button>
     </section>`;
     this.querySelector("button").addEventListener("click", () => { this.renderLoading(); this.load(); });
@@ -60,19 +60,11 @@ class AiSurfReport extends HTMLElement {
   renderReport(data) {
     const generated = new Date(data.generatedAt);
     this.innerHTML = `<section class="ai-report-card" aria-labelledby="ai-report-heading">
-      <div class="ai-report-heading"><div><span class="ai-report-kicker">AI surf report</span><h2 id="ai-report-heading">Your 72-hour read</h2></div><span class="ai-report-badge">Fresh</span></div>
+      <div class="ai-report-heading"><div><span class="ai-report-kicker">72 hour / AI surf report</span><div class="ai-report-title-row"><h2 id="ai-report-heading">Current and Coming Conditions</h2><button class="ai-report-audio" type="button" data-provider="google" aria-label="Play audio surf report"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 9v6h4l5 4V5L9 9H5Zm11.5 3a3.5 3.5 0 0 0-1.5-2.87v5.74A3.5 3.5 0 0 0 16.5 12Zm-1.5-6.92v2.06a5.5 5.5 0 0 1 0 9.72v2.06a7.5 7.5 0 0 0 0-13.84Z"/></svg><span>Play report</span></button></div></div><span class="ai-report-badge">Fresh</span></div>
       <div class="ai-report-copy-wrap is-collapsed">
         <div class="ai-report-copy" id="ai-report-copy">${this.markdown(data.markdown)}</div>
       </div>
       <div class="ai-report-actions">
-        <button class="ai-report-audio" type="button" data-provider="elevenlabs" aria-label="Play ElevenLabs audio surf report">
-          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 9v6h4l5 4V5L9 9H5Zm11.5 3a3.5 3.5 0 0 0-1.5-2.87v5.74A3.5 3.5 0 0 0 16.5 12Zm-1.5-6.92v2.06a5.5 5.5 0 0 1 0 9.72v2.06a7.5 7.5 0 0 0 0-13.84Z"/></svg>
-          <span>ElevenLabs</span><small>Play</small>
-        </button>
-        <button class="ai-report-audio" type="button" data-provider="google" aria-label="Play Google Gemini audio surf report">
-          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 9v6h4l5 4V5L9 9H5Zm11.5 3a3.5 3.5 0 0 0-1.5-2.87v5.74A3.5 3.5 0 0 0 16.5 12Zm-1.5-6.92v2.06a5.5 5.5 0 0 1 0 9.72v2.06a7.5 7.5 0 0 0 0-13.84Z"/></svg>
-          <span>Google Gemini</span><small>Play</small>
-        </button>
         <button class="ai-report-toggle" type="button" aria-expanded="false" aria-controls="ai-report-copy">Read more</button>
       </div>
       <p class="ai-report-audio-status" role="status" aria-live="polite"></p>
@@ -98,11 +90,11 @@ class AiSurfReport extends HTMLElement {
   }
 
   setAudioButton(button, state) {
-    const label = button.querySelector("small");
+    const label = button.querySelector("span");
     button.classList.toggle("is-playing", state === "playing");
     button.disabled = state === "loading";
-    label.textContent = state === "loading" ? "Preparing…" : state === "playing" ? "Pause" : "Play";
-    button.setAttribute("aria-label", `${label.textContent.replace("…", "")} ${button.querySelector("span").textContent} audio surf report`);
+    label.textContent = state === "loading" ? "Preparing…" : state === "playing" ? "Pause report" : "Play report";
+    button.setAttribute("aria-label", label.textContent.replace("…", ""));
   }
 
   async toggleAudio(data, button) {
@@ -128,14 +120,14 @@ class AiSurfReport extends HTMLElement {
     }
 
     this.setAudioButton(button, "loading");
-    const providerLabel = provider === "google" ? "Google Gemini" : "ElevenLabs";
-    status.textContent = `Generating the ${providerLabel} version…`;
+    status.textContent = "Generating the Gemini audio report…";
     try {
-      const response = await fetch("/api/report-audio", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ spot: data.spot, markdown: data.markdown, provider })
+      const params = new URLSearchParams({
+        spot: data.spot,
+        markdown: data.markdown,
+        generated: data.generatedAt.slice(0, 10)
       });
+      const response = await fetch(`/api/report-audio?${params}`);
       if (!response.ok) {
         const error = await response.json().catch(() => ({}));
         throw new Error(error.error || `Audio service returned ${response.status}`);

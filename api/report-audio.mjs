@@ -1,10 +1,7 @@
-import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
 import dotenv from "dotenv";
 
 dotenv.config({ path: ".env.local", quiet: true });
 
-const VOICE_ID = process.env.ELEVENLABS_VOICE_ID || "TX3LPaxmHKxFdv7VOQHJ";
-const MODEL_ID = process.env.ELEVENLABS_MODEL_ID || "eleven_flash_v2_5";
 const GEMINI_MODEL = process.env.GEMINI_TTS_MODEL || "gemini-3.8-flash-tts";
 const GEMINI_VOICE = process.env.GEMINI_TTS_VOICE || "Zubenelgenubi";
 const GEMINI_STYLE = "Casual, friendly and confident. Sound like a relaxed young West Coast surfer giving a useful morning surf report. Keep the delivery natural and the safety guidance clear, without exaggeration or forced slang.";
@@ -54,24 +51,6 @@ export function spokenText(markdown, spot) {
   return abridged.length <= 1800 ? abridged : `${abridged.slice(0, 1797).trimEnd()}...`;
 }
 
-async function streamToBuffer(stream) {
-  const chunks = [];
-  for await (const chunk of stream) chunks.push(Buffer.from(chunk));
-  return Buffer.concat(chunks);
-}
-
-async function elevenLabsAudio(text) {
-  const client = new ElevenLabsClient();
-  const audioStream = await client.textToSpeech.convert(VOICE_ID, {
-    text,
-    modelId: MODEL_ID,
-    outputFormat: "mp3_44100_128",
-    applyTextNormalization: "on",
-    voiceSettings: { stability: 0.42, similarityBoost: 0.78 }
-  });
-  return { audio: await streamToBuffer(audioStream), contentType: "audio/mpeg" };
-}
-
 async function geminiAudio(text) {
   const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
   const googleResponse = await fetch("https://generativelanguage.googleapis.com/v1beta/interactions", {
@@ -114,32 +93,29 @@ async function geminiAudio(text) {
 export default async function handler(request, response) {
   setCors(request, response);
   if (request.method === "OPTIONS") {
-    response.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-    response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    response.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
     return response.status(204).end();
   }
-  if (request.method !== "POST") return response.status(405).json({ error: "Method not allowed" });
-  const provider = request.body?.provider === "google" ? "google" : "elevenlabs";
-  if (provider === "elevenlabs" && !process.env.ELEVENLABS_API_KEY) {
-    return response.status(503).json({ error: "ElevenLabs audio is not configured" });
-  }
-  if (provider === "google" && !(process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
+  if (request.method !== "GET") return response.status(405).json({ error: "Method not allowed" });
+  if (!(process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
     return response.status(503).json({ error: "Google Gemini audio is not configured" });
   }
 
-  const text = spokenText(request.body?.markdown, request.body?.spot);
+  const markdown = Array.isArray(request.query?.markdown) ? request.query.markdown[0] : request.query?.markdown;
+  const spot = Array.isArray(request.query?.spot) ? request.query.spot[0] : request.query?.spot;
+  const text = spokenText(markdown, spot);
   if (text.length < 120 || text.length > 6000) return response.status(400).json({ error: "Invalid report text" });
 
   try {
-    const { audio, contentType } = provider === "google"
-      ? await geminiAudio(text)
-      : await elevenLabsAudio(text);
+    const { audio, contentType } = await geminiAudio(text);
     response.setHeader("Content-Type", contentType);
     response.setHeader("Content-Length", String(audio.length));
-    response.setHeader("Cache-Control", "private, no-store");
+    response.setHeader("Cache-Control", "public, max-age=86400, immutable");
+    response.setHeader("CDN-Cache-Control", "public, s-maxage=86400");
+    response.setHeader("Vercel-CDN-Cache-Control", "public, s-maxage=86400");
     return response.status(200).send(audio);
   } catch (error) {
-    console.error(`${provider} report audio failed`, error);
-    return response.status(502).json({ error: `${provider === "google" ? "Google Gemini" : "ElevenLabs"} audio is temporarily unavailable` });
+    console.error("Google Gemini report audio failed", error);
+    return response.status(502).json({ error: "Google Gemini audio is temporarily unavailable" });
   }
 }
