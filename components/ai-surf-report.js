@@ -1,3 +1,5 @@
+const REPORT_ENDPOINT = "https://decentsurf.vercel.app/api/surf-report";
+
 class AiSurfReport extends HTMLElement {
   connectedCallback() {
     this.renderLoading();
@@ -92,7 +94,7 @@ class AiSurfReport extends HTMLElement {
     if (window.location.protocol === "file:") return this.renderError("Open this page through its Vercel preview to generate the report.");
 
     try {
-      const response = await fetch(`/api/surf-report?slug=${encodeURIComponent(slug)}`);
+      const response = await fetch(`${REPORT_ENDPOINT}?slug=${encodeURIComponent(slug)}`);
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.error || `Report service returned ${response.status}`);
       this.renderReport(data);
