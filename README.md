@@ -10,6 +10,7 @@ NVIDIA hosted model to write the report. The shared location registry is
 generated from the canonical homepage spot list with:
 
 ```text
+node scripts/find-noaa-tide-stations.mjs
 node scripts/rollout-ai-reports.mjs
 ```
 

@@ -1,6 +1,7 @@
 import { readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { TIDE_STATIONS } from "../lib/tide-stations.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const homepage = await readFile(path.join(root, "index.html"), "utf8");
@@ -12,21 +13,12 @@ const slugify = (name) => name.toLowerCase().normalize("NFD")
   .replace(/[\u0300-\u036f]/g, "").replace(/[’'ʻ]/g, "")
   .replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 const timezones = { east: "America/New_York", west: "America/Los_Angeles", hawaii: "Pacific/Honolulu" };
-const tideStations = {
-  "manasquan-inlet": {
-    id: "8532591",
-    name: "Manasquan Inlet, USCG Station, NJ",
-    latitude: 40.1017,
-    longitude: -74.035
-  }
-};
-
 const spots = Object.fromEntries(rows.map(([name, place, region, latitude, longitude]) => {
   const slug = slugify(name);
   return [slug, {
     name, place, region, latitude, longitude,
     timezone: timezones[region],
-    ...(tideStations[slug] ? { tideStation: tideStations[slug] } : {})
+    ...(TIDE_STATIONS[slug] ? { tideStation: TIDE_STATIONS[slug] } : {})
   }];
 }));
 
