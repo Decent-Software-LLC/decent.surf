@@ -62,7 +62,7 @@ class AiSurfReport extends HTMLElement {
   renderReport(data) {
     const generated = new Date(data.generatedAt);
     this.innerHTML = `<section class="ai-report-card" aria-labelledby="ai-report-heading">
-      <div class="ai-report-heading"><div><span class="ai-report-kicker">72 hour / AI surf report</span><h2 id="ai-report-heading">Current and Coming Conditions</h2></div><span class="ai-report-badge">Fresh</span></div>
+      <div class="ai-report-heading"><div><span class="ai-report-kicker">72 hour / AI surf report</span><h2 id="ai-report-heading">Latest Condition Report</h2></div><span class="ai-report-badge">Fresh</span></div>
       <div class="ai-report-copy-wrap is-collapsed">
         <div class="ai-report-copy" id="ai-report-copy">${this.markdown(data.markdown)}</div>
       </div>
