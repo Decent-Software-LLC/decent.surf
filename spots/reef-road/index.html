@@ -17,6 +17,7 @@
     <meta name="apple-mobile-web-app-title" content="decent.surf" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png" />
+    <link rel="stylesheet" href="/components/ai-surf-report.css?v=1" />
     <title>Reef Road Surf Conditions — decent.surf</title>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JQVVRLSHDL"></script>
@@ -25,6 +26,7 @@
     <script type="module" src="/components/live-camera.js"></script>
     <script type="module" src="/components/share-spot.js?v=4"></script>
     <script type="module" src="/components/dawn-patrol.js"></script>
+    <script type="module" src="/components/ai-surf-report.js?v=8"></script>
     <style>
       :root { color-scheme: light; --ink:#173047; --muted:#65798a; --ocean:#147da1; --dark:#07536f; --foam:#eef7fa; --card:#fff; --line:#d9e8ee; --decent:#13866f; --shadow:0 18px 48px rgb(21 74 96 / .1); }
       * { box-sizing:border-box; }
@@ -123,6 +125,7 @@
 
       <surf-conditions spot="Reef Road" latitude="26.7509" longitude="-80.0337"></surf-conditions>
       <live-camera></live-camera>
+      <ai-surf-report spot-slug="reef-road"></ai-surf-report>
 
       <section class="section" aria-labelledby="forecast-heading">
         <div class="section-heading"><div><p class="eyebrow">Looking ahead</p><h2 id="forecast-heading">Seven-day forecast</h2></div><span class="section-note">Daily range · dominant period and direction</span></div>
