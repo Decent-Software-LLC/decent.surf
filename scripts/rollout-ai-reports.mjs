@@ -53,8 +53,8 @@ for (const slug of spotDirectories) {
   }
   if (!html.includes(`<ai-surf-report spot-slug="${slug}">`)) {
     html = html.replace(
-      "      <live-camera></live-camera>",
-      `      <live-camera></live-camera>\n      <ai-surf-report spot-slug="${slug}"></ai-surf-report>`
+      /(      <surf-conditions[^>]*><\/surf-conditions>)/,
+      `$1\n      <ai-surf-report spot-slug="${slug}"></ai-surf-report>`
     );
   }
   await writeFile(pagePath, html);
